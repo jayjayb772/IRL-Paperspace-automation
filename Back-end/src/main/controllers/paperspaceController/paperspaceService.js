@@ -156,14 +156,49 @@ function getOpenMachines() {
 
 //region revokeAccess
 function revokeAccessFromEmail(reqBody) {
-
+    return new Promise((async (resolve, reject) => {
+        try {
+            betterLogging("revokeAccessFromEmail", "Starting process", reqBody)
+            let user = await findUserByEmail(reqBody.email)
+            betterLogging("revkeAccessFromEmail", "finished getting user", user)
+            let assignedMachine = await getMachineByAssignedId(user.id)
+            betterLogging("revokeAccessFromEmail", "finished getting machine", assignedMachine)
+            let setAccessResponse = await setMachineAccess(user.id, assignedMachine.id, false)
+            setAccessResponse.machineId = assignedMachine.id
+            betterLogging("revokeAccessFromEmail", "finished setting access", setAccessResponse)
+            resolve(setAccessResponse);
+        } catch (err) {
+            betterLogging("revokeAccessFromEmail", "CATCH ERROR", err)
+            reject(err)
+        }
+    }))
 }
 
 function getMachineByAssignedId(userId) {
+    return new Promise(((resolve, reject) => {
+        try {
+            listMachines().then(machinesList => {
+                betterLogging("getMachineByAssignedId", "machine List", machinesList)
+                let assignedMachines = machinesList.filter(m => m.userId === userId);
+                betterLogging("getMachineByAssignedId", "machine List filtered", openMachines)
+                if (assignedMachines.length < 1) {
+                    throw betterError(404, "Cannot find Machine assigned to user", "Filter,machine list by state, returned zero matching machines")
+                } else {
+                    resolve(assignedMachines[0])
+                }
+            }).catch(err=>{
+                betterLogging("getMachineByAssignedId", "then catch err", err)
+                reject(err);
+            })
+        } catch (err) {
+            betterLogging("getMachineByAssignedId", "try catch err", err)
+            reject(err);
+        }
+    }))
 
 }
 
 //endregion
 
 
-module.exports = {giveAccessFromEmail}
+module.exports = {giveAccessFromEmail, revokeAccessFromEmail}

@@ -188,7 +188,7 @@ paperspaceController.post('/give-access-from-email', async (req, res) => {
 paperspaceController.post('/revoke-access-from-email', async (req, res) => {
 
     giveAccessFromEmail(req.body).then(paperspaceRes=>{
-        res.send(`gave ${req.body.email} access to paperspace machine #### ${paperspaceRes}`)
+        res.send(`Removed ${req.body.email}'s access to paperspace machine ${paperspaceRes.machineId}`)
     }).catch(err=>{
         res.status(err.statusCode);
         res.send(err);

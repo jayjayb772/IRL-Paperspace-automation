@@ -38,8 +38,6 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
  *         description: login
  */
 app.get('/', (req, res) =>{
-    debuglog(req)
-    debuglog("HOME")
     res.send("Hello World!");
 })
 

@@ -1,0 +1,12 @@
+.Title{
+    font-size: 150%;
+}
+
+.mainDiv{
+    display: inline-block;
+    justify-content: center;
+    alignment: center;
+    align-items: center;
+    align-self: center;
+    align-content: center;
+}

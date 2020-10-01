@@ -125,7 +125,7 @@ paperspaceController.get('/', (req, res) => {
  *
  * /paperspace/give-access-from-email:
  *   post:
- *     description: gets all contact lists
+ *     description: gives access to machine
  *     produces:
  *       - application/json
  *     requestBody:
@@ -157,4 +157,41 @@ paperspaceController.post('/give-access-from-email', async (req, res) => {
         })
 })
 
+
+/**
+ * @swagger
+ *
+ * /paperspace/revoke-access-from-email:
+ *   post:
+ *     description: revokes access to machine
+ *     produces:
+ *       - application/json
+ *     requestBody:
+ *      description: Optional description in *Markdown*
+ *      required: true
+ *      content:
+ *       application/json:
+ *        schema:
+ *         $ref: '#/definitions/EnableAccessRequest'
+ *     responses:
+ *       200:
+ *         description: successfully granted access
+ *       400:
+ *         description: Bad request body
+ *       404:
+ *         description: Resource not found
+ *       500:
+ *         description: Internal Server Error
+ *       501:
+ *         description: Paperspace API Error
+ */
+paperspaceController.post('/revoke-access-from-email', async (req, res) => {
+
+    giveAccessFromEmail(req.body).then(paperspaceRes=>{
+        res.send(`gave ${req.body.email} access to paperspace machine #### ${paperspaceRes}`)
+    }).catch(err=>{
+        res.status(err.statusCode);
+        res.send(err);
+    })
+})
 module.exports = paperspaceController;

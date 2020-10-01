@@ -1,6 +1,5 @@
 import React from 'react';
 import './App.css';
-import { ThemeProvider, CSSReset, theme, Link, Text } from '@chakra-ui/core'
 import GiveAccess from "../giveAccess/GiveAccess";
 import RevokeAccess from "../revokeAccess/RevokeAccess";
 import Home from "../home/Home";
@@ -14,8 +13,8 @@ function App(){
                 <div>
                 <Switch>
                     <Route exact path="/" component={Home}/>
-                    <Route exact path="/giveAccess" component={GiveAccess}/>
-                    <Route exact path="/revokeAccess" component={RevokeAccess}/>
+                    <Route exact path="/GiveAccess" component={GiveAccess}/>
+                    <Route exact path="/RevokeAccess" component={RevokeAccess}/>
                 </Switch>
                 </div>
 

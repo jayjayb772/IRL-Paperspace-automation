@@ -7,9 +7,8 @@ function Nav(props){
         <div className="mainDiv">
             <div className="Title" >Paperspace Give Access</div>
             <br/>
-            <NavLink to="/giveAccess">Give Access</NavLink>
-            <br/>
-            <NavLink to="/revokeAccess" >Revoke Access</NavLink>
+            <NavLink to="/GiveAccess" className="navLink">Give Access</NavLink>
+            <NavLink to="/RevokeAccess" className="navLink">Revoke Access</NavLink>
         </div>
     )
 }

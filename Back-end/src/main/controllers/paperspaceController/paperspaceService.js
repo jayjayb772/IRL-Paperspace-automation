@@ -117,6 +117,7 @@ function giveAccessFromEmail(reqBody) {
             let openMachine = await getOpenMachines()
             betterLogging("giveAccessFromEmail", "finished getting machine", openMachine)
             let setAccessResponse = await setMachineAccess(user.id, openMachine.id, true)
+            setAccessResponse.machineId = openMachine.id
             betterLogging("giveAccessFromEmail", "finished setting access", setAccessResponse)
             resolve(setAccessResponse);
         } catch (err) {

@@ -148,9 +148,9 @@ paperspaceController.get('/', (req, res) => {
  *         description: Paperspace API Error
  */
 paperspaceController.post('/give-access-from-email', async (req, res) => {
-
+    console.log(req);
     giveAccessFromEmail(req.body).then(paperspaceRes=>{
-            res.send(`gave ${req.body.email} access to paperspace machine #### ${paperspaceRes}`)
+            res.send(`Gave ${req.body.email} access to paperspace machine ${paperspaceRes.machineId}`)
         }).catch(err=>{
             res.status(err.statusCode);
             res.send(err);

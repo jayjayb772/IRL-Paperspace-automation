@@ -1,12 +1,12 @@
 .Title{
-    font-size: 150%;
+    font-size: 200%;
 }
 
 .mainDiv{
-    display: inline-block;
-    justify-content: center;
-    alignment: center;
-    align-items: center;
-    align-self: center;
-    align-content: center;
+
+}
+
+.navLink{
+    font-size: 125%;
+    margin: 1%;
 }

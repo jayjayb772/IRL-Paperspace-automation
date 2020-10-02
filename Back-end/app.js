@@ -6,7 +6,7 @@ const bodyParser = require('body-parser');
 const swaggerUi = require('swagger-ui-express');
 const swaggerJSDoc = require('swagger-jsdoc');
 const cors = require('cors')
-const paperspaceController = require("./src/main/controllers/paperspaceController/paperspaceController");
+const accessController = require("./src/main/controllers/paperspace/accessController/accessController");
 const swagoptions = {
     definition: {
         openapi: '3.0.0', // Specification (optional, defaults to swagger: '2.0')
@@ -16,7 +16,7 @@ const swagoptions = {
         },
     },
     // Path to the API docs
-    apis: ['./src/main/controllers/*/*.js', './*.js', './src/main/controllers/paperspaceController/*.js'],
+    apis: ['./src/main/controllers/*/*.js', './*.js', './src/main/controllers/paperspace/userController/*.js', './src/main/controllers/paperspace/machineController/*.js', './src/main/controllers/paperspace/accessController/*.js'],
 };
 const swaggerSpec = swaggerJSDoc(swagoptions);
 
@@ -42,6 +42,6 @@ app.get('/', (req, res) =>{
 })
 
 
-app.use('/paperspace', paperspaceController)
+app.use('/access', accessController)
 
 module.exports = app;

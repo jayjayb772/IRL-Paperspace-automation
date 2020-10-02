@@ -1,6 +1,6 @@
-const {giveAccessFromEmail} =  require("./paperspaceService");
+const {giveAccessFromEmail} =  require("../paperspaceService");
 const express = require('express');
-const paperspaceController = express.Router()
+const accessController = express.Router()
 
 /**
  * @swagger
@@ -106,7 +106,7 @@ const paperspaceController = express.Router()
 /**
  * @swagger
  *
- * /paperspace/:
+ * /access/:
  *   get:
  *     description: gets all contact lists
  *     produces:
@@ -115,15 +115,15 @@ const paperspaceController = express.Router()
  *       200:
  *         description: send a text
  */
-paperspaceController.get('/', (req, res) => {
-    res.send("paperspace Controller home");
+accessController.get('/', (req, res) => {
+    res.send("access Controller home");
 })
 
 
 /**
  * @swagger
  *
- * /paperspace/give-access-from-email:
+ * /access/give-access-from-email:
  *   post:
  *     description: gives access to machine
  *     produces:
@@ -147,7 +147,7 @@ paperspaceController.get('/', (req, res) => {
  *       501:
  *         description: Paperspace API Error
  */
-paperspaceController.post('/give-access-from-email', async (req, res) => {
+accessController.post('/give-access-from-email', async (req, res) => {
     console.log(req);
     giveAccessFromEmail(req.body).then(paperspaceRes=>{
             res.send(`Gave ${req.body.email} access to paperspace machine ${paperspaceRes.machineId}`)
@@ -161,7 +161,7 @@ paperspaceController.post('/give-access-from-email', async (req, res) => {
 /**
  * @swagger
  *
- * /paperspace/revoke-access-from-email:
+ * /access/revoke-access-from-email:
  *   post:
  *     description: revokes access to machine
  *     produces:
@@ -185,7 +185,7 @@ paperspaceController.post('/give-access-from-email', async (req, res) => {
  *       501:
  *         description: Paperspace API Error
  */
-paperspaceController.post('/revoke-access-from-email', async (req, res) => {
+accessController.post('/revoke-access-from-email', async (req, res) => {
 
     giveAccessFromEmail(req.body).then(paperspaceRes=>{
         res.send(`Removed ${req.body.email}'s access to paperspace machine ${paperspaceRes.machineId}`)
@@ -194,4 +194,4 @@ paperspaceController.post('/revoke-access-from-email', async (req, res) => {
         res.send(err);
     })
 })
-module.exports = paperspaceController;
+module.exports = accessController;

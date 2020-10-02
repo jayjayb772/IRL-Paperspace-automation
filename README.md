@@ -9,6 +9,6 @@ automates the reservation process for paperspace machines
   - ONCE APP IS RUNNING: Swagger-UI API Docs found [here](localhost:8080/api-docs)
 - To start front-end, run _npm start_ in ./Front-end,
   - Default set to localhost:3000
-  - To build/compile, run _npm run-script build_
+  - To build/serve, run _npm run-script build_ then _serve -s build_ Defaults to localhost:5000
   
 For documentation, see /Back-end/designDocs for flow charts, go to [localhost:8080/api-docs](localhost:8080/api-docs) to see API and examples while running locally.

@@ -7,41 +7,31 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerJSDoc = require('swagger-jsdoc');
 const cors = require('cors')
 const accessController = require("./src/main/controllers/paperspace/accessController/accessController");
-const swagoptions = {
+const utilsController = require("./src/main/controllers/paperspace/utilsController");
+const swagOptions = {
     definition: {
         openapi: '3.0.0', // Specification (optional, defaults to swagger: '2.0')
         info: {
-            title: 'Messaging Service', // Title (required)
+            title: 'IRL Paperspace control API', // Title (required)
             version: '1.0.0', // Version (required)
         },
     },
     // Path to the API docs
-    apis: ['./src/main/controllers/*/*.js', './*.js', './src/main/controllers/paperspace/userController/*.js', './src/main/controllers/paperspace/machineController/*.js', './src/main/controllers/paperspace/accessController/*.js'],
+    apis: ['./src/main/controllers/*/*.js', './*.js', './src/main/controllers/paperspace/utilsController/*.js', './src/main/controllers/paperspace/accessController/*.js'],
 };
-const swaggerSpec = swaggerJSDoc(swagoptions);
+const swaggerSpec = swaggerJSDoc(swagOptions);
 
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors())
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
-/**
- * @swagger
- *
- * /:
- *   get:
- *     description: base url
- *     produces:
- *       - application/json
- *     responses:
- *       200:
- *         description: login
- */
+
 app.get('/', (req, res) =>{
     res.send("Hello World!");
 })
 
-
 app.use('/access', accessController)
+app.use('/utils', utilsController)
 
 module.exports = app;

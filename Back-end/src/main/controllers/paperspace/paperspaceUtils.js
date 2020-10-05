@@ -17,7 +17,7 @@ function listMachines(options={}) {
                     reject(betterError(err.statusCode, "Paperspace Machines api call fail", err.message));
                 }
                 if(res.length < 1){
-                   reject(betterError(404, "Cannot find Open Machine", "fltering of machine list by state returned zero matching machines"))
+                   reject(betterError(404, "Cannot find Open Machine", "Filtering of machine list by state returned zero matching machines"))
                 }
                 resolve(res);
             })
@@ -51,7 +51,6 @@ function setMachineAccess(userId, machineId, enableAccess) {
         }
     }))
 }
-
 //endregion
 
 //region users

@@ -1,5 +1,7 @@
-const {giveAccessFromEmail} =  require("../paperspaceService");
+const {giveAccessFromEmail} =  require("./accessService");
 const express = require('express');
+const {loginToSite} = require("./accessService");
+const {revokeAccessFromEmail} = require("./accessService");
 const accessController = express.Router()
 
 /**
@@ -24,97 +26,28 @@ const accessController = express.Router()
  *      description: Email address associated with paperspace account
  *      example: "yourpaperspace@email.com"
  *
- *   Author:
+ *   LoginRequest:
  *    type: object
  *    required:
  *     - name
+ *     - password
  *    properties:
  *     name:
  *      type: string
- *      example: "author name"
- *
- *   Commits:
- *    type: object
- *    required:
- *     - message
- *     - added
- *     - removed
- *     - modified
- *    properties:
- *     message:
+ *      format: name
+ *      description: Your username
+ *      example: "your username"
+ *     password:
  *      type: string
- *      example: "Commit Message"
- *      format: message
- *     author:
- *      type: object
- *      $ref: '#/definitions/Author'
- *     added:
- *      type: array
- *      items:
- *       type: string
- *       example: ["/example/example.js", "test/test.js"]
- *     removed:
- *      type: array
- *      items:
- *       type: string
- *       example: ["/example/example.js", "test/test.js"]
- *     modified:
- *      type: array
- *      items:
- *       type: string
- *       example: ["/example/example.js", "test/test.js"]
+ *      format: password
+ *      description: password
+ *      example: "password"
  *
- *   HeadCommit:
- *    type: object
- *    required:
- *     - url
- *    properties:
- *     url:
- *      type: string
- *      format: message
- *
- *
- *   PushEvent:
- *     type: object
- *     required:
- *       - repository
- *       - commits
- *       - head_commit
- *     properties:
- *       repository:
- *         description: Repository object
- *         required: true
- *         type: object
- *         $ref: '#/definitions/Repository'
- *       commits:
- *         description: Commits object
- *         required: true
- *         type: array
- *         items:
- *          type: object
- *          $ref: '#/definitions/Commits'
- *          example: [{}, {}]
- *       head_commit:
- *         description: Head object
- *         required: true
- *         type: object
- *         $ref: '#/definitions/HeadCommit'
  */
 
 
 
-/**
- * @swagger
- *
- * /access/:
- *   get:
- *     description: gets all contact lists
- *     produces:
- *       - application/json
- *     responses:
- *       200:
- *         description: send a text
- */
+
 accessController.get('/', (req, res) => {
     res.send("access Controller home");
 })
@@ -187,8 +120,42 @@ accessController.post('/give-access-from-email', async (req, res) => {
  */
 accessController.post('/revoke-access-from-email', async (req, res) => {
 
-    giveAccessFromEmail(req.body).then(paperspaceRes=>{
+    revokeAccessFromEmail(req.body).then(paperspaceRes=>{
         res.send(`Removed ${req.body.email}'s access to paperspace machine ${paperspaceRes.machineId}`)
+    }).catch(err=>{
+        res.status(err.statusCode);
+        res.send(err);
+    })
+})
+
+/**
+ * @swagger
+ *
+ * /access/login:
+ *   post:
+ *     description: login to change access
+ *     produces:
+ *       - application/json
+ *     requestBody:
+ *      description: Optional description in *Markdown*
+ *      required: true
+ *      content:
+ *       application/json:
+ *        schema:
+ *         $ref: '#/definitions/LoginRequest'
+ *     responses:
+ *       200:
+ *         description: successfully logged in
+ *       400:
+ *         description: Bad request body
+ *       401:
+ *         description: not authorized
+ *       500:
+ *         description: Internal Server Error
+ */
+accessController.post('/login', async (req, res) => {
+    loginToSite(req.body).then(loginRes=>{
+        res.send(loginRes)
     }).catch(err=>{
         res.status(err.statusCode);
         res.send(err);

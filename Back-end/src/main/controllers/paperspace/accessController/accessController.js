@@ -128,37 +128,4 @@ accessController.post('/revoke-access-from-email', async (req, res) => {
     })
 })
 
-/**
- * @swagger
- *
- * /access/login:
- *   post:
- *     description: login to change access
- *     produces:
- *       - application/json
- *     requestBody:
- *      description: Optional description in *Markdown*
- *      required: true
- *      content:
- *       application/json:
- *        schema:
- *         $ref: '#/definitions/LoginRequest'
- *     responses:
- *       200:
- *         description: successfully logged in
- *       400:
- *         description: Bad request body
- *       401:
- *         description: not authorized
- *       500:
- *         description: Internal Server Error
- */
-accessController.post('/login', async (req, res) => {
-    loginToSite(req.body).then(loginRes=>{
-        res.send(loginRes)
-    }).catch(err=>{
-        res.status(err.statusCode);
-        res.send(err);
-    })
-})
 module.exports = accessController;

@@ -26,6 +26,7 @@
     "http-errors": "^1.8.0",
     "isomorphic-form-data": "^2.0.0",
     "jest": "^26.4.2",
+    "md5": "^2.3.0",
     "morgan": "~1.9.1",
     "mysql": "^2.18.1",
     "nodemon": "^2.0.4",
@@ -33,6 +34,7 @@
     "pug": "^2.0.4",
     "request": "^2.88.2",
     "requests": "^0.3.0",
+    "sqlite3": "^5.0.0",
     "swagger-jsdoc": "^4.0.0",
     "swagger-ui-express": "^4.1.4"
   },

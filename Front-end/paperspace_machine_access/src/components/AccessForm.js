@@ -20,9 +20,9 @@ function AccessForm(props){
         event.preventDefault()
         let url;
         if(props.access){
-            url = process.env.REACT_APP_GIVE_ACCESS_URL;
+            url = `${process.env.REACT_APP_API_URL}/access/give-access-from-email`
         }else{
-            url = process.env.REACT_APP_REVOKE_ACCESS_URL;
+            url = `${process.env.REACT_APP_API_URL}/access/revoke-access-from-email`
         }
         const body={
             name: name,

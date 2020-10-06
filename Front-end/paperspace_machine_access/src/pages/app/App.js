@@ -46,18 +46,14 @@ function App(){
     const handleClick = async (event) => {
         event.preventDefault()
         console.log("handle click")
-
-        const body={
-            name: name,
-            password: password
-        };
-
-        let url = process.env.REACT_APP_LOGIN_URL;
-        const { data } = await axios.post(`${url}`, body).catch(err=>{
-            alert(`Could not log in`)
-            setPassword(()=>"");
-            setName(()=>"");
-        });
+        const { data } = await axios.post(
+                                `${apiUrl}/login`,
+                                {name: name, password: password})
+                                    .catch(err=>{
+                                        alert(`Could not log in`)
+                                        setPassword(()=>"");
+                                        setName(()=>"");
+                                    });
         setPassword(()=>"");
         setName(()=>"");
         localStorage.setItem('token', data.token);
@@ -94,7 +90,7 @@ function App(){
                         Password:
                         <input type={revealPass ? "text" : "password"} value={password} onChange={e => setPassword(e.target.value)} className="input"/>
                     </label>
-                    <button onClick={showpass} className="showPass">Show password</button>
+                    <div onMouseEnter={showpass} onMouseLeave={showpass} className="showPass">Show password</div>
                     <br/>
                     <button type="submit">
                         Login

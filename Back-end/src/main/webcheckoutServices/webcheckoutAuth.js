@@ -1,3 +1,5 @@
+const request = require('request')
+
 /*
 
 var request = require('sync-request');
@@ -46,9 +48,75 @@ res = request('POST', host + '/rest/session/setSessionScope', {json: postBody});
 postRes = JSON.parse(res.body.toString('utf-8'));
  */
 
+//
 
 //TODO Get Session ID
+async function getSessionId(){
+    return new Promise((resolve, reject) => {
+    let postBody = {
+        "sessionid":"",
+        "userid":`${process.env.WEBCHECKOUT_UN}`,
+        "password":`${process.env.WEBCHECKOUT_PWD}`
+    }
+
+    let options = {
+        headers:{
+
+        },
+        body:JSON.stringify(postBody)
+    }
+    request.post(`${process.env.WEBCHECKOUT_HOST}/rest/session/start`, options, (err, res)=>{
+        if(err){
+            reject({res, err})
+        }
+        let resBody = JSON.parse(res.body);
+        console.log(resBody)
+        let sessionid= resBody.session.sessionid
+        resolve(sessionid)
+    })
+    }).catch(err=>{
+        return err;
+    })
+}
 
 //TODO Set Session Scope with ID
+async function setSessionScope(sessionId){
+    return new Promise(((resolve, reject) => {
+        let postBody = {
+         "sessionid":`${sessionId}`,
+            "checkoutCenter":{ "_class": "checkoutCenter", "oid": 53207831, "name": "Idea Realization Lab"}
+        }
+        let options = {
+            "headers":{
+
+            },
+            "body":JSON.stringify(postBody)
+        }
+
+        request.post(`${process.env.WEBCHECKOUT_HOST}/rest/session/setSessionScope`, options, (err, res)=>{
+            if(err){
+                reject({res, err})
+            }else{
+                process.env.SID = sessionId
+                resolve("Successfully set Scope")
+            }
+        })
+    })).catch(err=>{
+        return err;
+    })
+}
+
 
 //TODO LOGIN-> Set Session Scope-> Return Session id
+async function startNewSession(){
+    return new Promise((async (resolve, reject) => {
+    let sid = await getSessionId()
+        setSessionScope(sid).then(res=>{
+            resolve(res);
+        }).catch(err=>{
+            reject(err)
+        })
+    }))
+}
+
+module.exports = {getSessionId,setSessionScope, startNewSession}

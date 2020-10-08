@@ -12,6 +12,8 @@ const accessController = require("./src/main/controllers/paperspace/accessContro
 const utilsController = require("./src/main/controllers/paperspace/utilsController");
 const {loginToSite} = require("./src/main/controllers/paperspace/accessController/accessService");
 const db = require('./src/main/database/database')
+const {startNewSession} = require("./src/main/webcheckoutServices/webcheckoutAuth");
+const {getSessionId} = require("./src/main/webcheckoutServices/webcheckoutAuth");
 const swagOptions = {
     definition: {
         openapi: '3.0.0', // Specification (optional, defaults to swagger: '2.0')
@@ -56,6 +58,7 @@ const jwtSecret = process.env.JWT_SECRET;
  *       500:
  *         description: Internal Server Error
  */
+
 app.post('/login', async (req, res) => {
     loginToSite(req.body).then(loginRes=>{
         res.json({
@@ -68,7 +71,18 @@ app.post('/login', async (req, res) => {
 })
 
 app.use(jwt({ secret: jwtSecret, algorithms: ['HS256'] }));
+
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
+
+app.get('/startSession', ((req, res) => {
+    startNewSession().then(response=>{
+        res.send(response)
+        }).catch(err=>{
+            res.status(500);
+            res.send(err)
+    })
+    }
+))
 
 
 app.get('/', (req, res) =>{

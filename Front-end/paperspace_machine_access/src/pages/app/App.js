@@ -6,6 +6,8 @@ import Home from "../home/Home";
 import Nav from "../../components/Nav";
 import {BrowserRouter, Route, Router, Switch} from "react-router-dom";
 import axios from "axios";
+import md5 from "md5";
+
 
 const apiUrl = process.env.REACT_APP_API_URL
 
@@ -48,7 +50,7 @@ function App(){
         console.log("handle click")
         const { data } = await axios.post(
                                 `${apiUrl}/login`,
-                                {name: name, password: password})
+                                {name: name, password: md5(password)})
                                     .catch(err=>{
                                         alert(`Could not log in`)
                                         setPassword(()=>"");

@@ -1,3 +1,4 @@
+const {md5} = require("md5");
 const {betterError} = require("../../../util/betterError");
 const {betterLogging}= require("../../../util/betterLogging");
 const {listMachines, listUsers, setMachineAccess} = require("../paperspaceUtils");
@@ -47,7 +48,7 @@ function revokeAccessFromEmail(reqBody) {
 function loginToSite(reqBody){
     return new Promise((async (resolve, reject) => {
         try {
-            if(reqBody.name === process.env.DEFAULT_USER && reqBody.password === process.env.DEFAULT_PASSWORD){
+            if(reqBody.name === process.env.DEFAULT_USER && reqBody.password === md5(process.env.DEFAULT_PASSWORD)){
                 resolve("Success")
             }else{
                 reject(betterError(401, "Not authorized", "Could not verify credentials"))

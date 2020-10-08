@@ -7,7 +7,7 @@ let db = new sqlite3.Database(DBSOURCE, (err) => {
     if (err) {
         console.error(err.message)
         throw err
-    }else{
+    } else {
         console.log('Connected to the SQLite database.')
         //region INIT DB
         //Create t_reservations
@@ -20,14 +20,14 @@ let db = new sqlite3.Database(DBSOURCE, (err) => {
             )`,
             (err) => {
                 if (err) {
-                    db.all('SELECT * FROM t_reservations', [], (err, rows)=>{
+                    db.all('SELECT * FROM t_reservations', [], (err, rows) => {
                         if (err) {
                             console.log(err)
                             return;
                         }
                         console.log(rows)
                     })
-                }else{
+                } else {
                     // Table just created, creating some rows
                     let insert = 'INSERT INTO t_reservations (reservation_id, user_id, start_ts, end_ts, status) VALUES (?,?,?,?,?)'
                     db.run(insert, ["CK-89852", "JBENDE11", "2020-10-08T14:00:00.000000-05:00", "2020-10-08T15:00:00.000000-05:00", "RESERVATION"])
@@ -48,17 +48,17 @@ let db = new sqlite3.Database(DBSOURCE, (err) => {
             )`,
             (err) => {
                 if (err) {
-                    db.all('SELECT * FROM t_users', [], (err, rows)=>{
+                    db.all('SELECT * FROM t_users', [], (err, rows) => {
                         if (err) {
                             console.log(err)
                             return;
                         }
                         console.log(rows)
                     })
-                }else{
+                } else {
                     // Table just created, creating some rows
                     let insert = 'INSERT INTO t_users (user_id, name, email_address, paperspace_email_address, verified_in_paperspace, paperspace_user_id, assigned_machine, reservations) VALUES (?,?,?,?,?,?,?,?)'
-                    db.run(insert, ["JBENDE11", "Jacob Bender","jbende11@depaul.edu", null, 0, null, null, "[CK-89852]"])
+                    db.run(insert, ["JBENDE11", "Jacob Bender", "jbende11@depaul.edu", null, 0, null, null, "[CK-89852]"])
                     console.log('HERE');
                 }
             });
@@ -72,14 +72,14 @@ let db = new sqlite3.Database(DBSOURCE, (err) => {
                         )`,
             (err) => {
                 if (err) {
-                    db.all('SELECT * FROM t_machines', [], (err, rows)=>{
+                    db.all('SELECT * FROM t_machines', [], (err, rows) => {
                         if (err) {
                             console.log(err)
                             return;
                         }
                         console.log(rows)
                     })
-                }else{
+                } else {
                     // Table just created, creating some rows
                     let insert = 'INSERT INTO t_machines (machine_id, in_use, state, assigned_to) VALUES (?,?,?,?)'
                     db.run(insert, ["psfyw98r0", 0, "off", null])

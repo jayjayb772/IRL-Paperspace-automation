@@ -14,6 +14,8 @@ const {loginToSite} = require("./src/main/controllers/paperspace/accessControlle
 const db = require('./src/main/database/database')
 const webcheckoutController = require("./src/main/controllers/webcheckout/webcheckoutController");
 const dbController = require("./src/main/database/dbController");
+const {startNewSession} = require("./src/main/controllers/webcheckout/webcheckoutServices/webcheckoutAuth");
+const {getReservationsAndUpdateDB} = require("./src/main/controllers/webcheckout/webcheckoutServices/webcheckoutReservations");
 const swagOptions = {
     definition: {
         openapi: '3.0.0', // Specification (optional, defaults to swagger: '2.0')
@@ -87,5 +89,22 @@ app.use('/database', dbController)
 app.use(function(req, res){
     res.status(404);
 });
+
+function handleTimeout(){
+    console.log("This is running every 5 minutes")
+    getReservationsAndUpdateDB().then(r => {
+        console.log("Successfully ran update res")
+        console.log(r)
+    }).catch(err=>{
+        console.error(err)
+    })
+}
+if(!process.env.SID) {
+    startNewSession().then(r => {
+        console.log(r)
+    })
+}
+
+setInterval(handleTimeout, 60000*5)
 
 module.exports = app;

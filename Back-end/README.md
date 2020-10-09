@@ -5,11 +5,6 @@ Going to implement sqlite db with this https://developerhowto.com/2018/12/29/bui
 
 # Moving forward for automation
 
-- Search tables
-  - t_users
-  - t_reservations
-  - t_machines
-
 - Insert into tables
 - populate tables  with current info
 

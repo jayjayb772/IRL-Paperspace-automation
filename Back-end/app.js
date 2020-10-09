@@ -12,8 +12,7 @@ const accessController = require("./src/main/controllers/paperspace/accessContro
 const utilsController = require("./src/main/controllers/paperspace/utilsController");
 const {loginToSite} = require("./src/main/controllers/paperspace/accessController/accessService");
 const db = require('./src/main/database/database')
-const {startNewSession} = require("./src/main/webcheckoutServices/webcheckoutAuth");
-const {getSessionId} = require("./src/main/webcheckoutServices/webcheckoutAuth");
+const webcheckoutController = require("./src/main/controllers/webcheckout/webcheckoutController");
 const swagOptions = {
     definition: {
         openapi: '3.0.0', // Specification (optional, defaults to swagger: '2.0')
@@ -74,16 +73,6 @@ app.use(jwt({ secret: jwtSecret, algorithms: ['HS256'] }));
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
-app.get('/startSession', ((req, res) => {
-    startNewSession().then(response=>{
-        res.send(response)
-        }).catch(err=>{
-            res.status(500);
-            res.send(err)
-    })
-    }
-))
-
 
 app.get('/', (req, res) =>{
     res.send("Hello World!");
@@ -91,6 +80,7 @@ app.get('/', (req, res) =>{
 
 app.use('/access', accessController)
 app.use('/utils', utilsController)
+app.use('/wco', webcheckoutController)
 
 app.use(function(req, res){
     res.status(404);

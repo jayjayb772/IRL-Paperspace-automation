@@ -13,6 +13,7 @@ const utilsController = require("./src/main/controllers/paperspace/utilsControll
 const {loginToSite} = require("./src/main/controllers/paperspace/accessController/accessService");
 const db = require('./src/main/database/database')
 const webcheckoutController = require("./src/main/controllers/webcheckout/webcheckoutController");
+const dbController = require("./src/main/database/dbController");
 const swagOptions = {
     definition: {
         openapi: '3.0.0', // Specification (optional, defaults to swagger: '2.0')
@@ -81,6 +82,7 @@ app.get('/', (req, res) =>{
 app.use('/access', accessController)
 app.use('/utils', utilsController)
 app.use('/wco', webcheckoutController)
+app.use('/database', dbController)
 
 app.use(function(req, res){
     res.status(404);

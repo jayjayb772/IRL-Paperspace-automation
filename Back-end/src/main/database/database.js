@@ -44,7 +44,7 @@ let db = new sqlite3.Database(DBSOURCE, (err) => {
             verified_in_paperspace integer,
             paperspace_user_id text,
             assigned_machine text,
-            reservations blob
+            reservations text
             )`,
             (err) => {
                 if (err) {
@@ -58,7 +58,7 @@ let db = new sqlite3.Database(DBSOURCE, (err) => {
                 } else {
                     // Table just created, creating some rows
                     let insert = 'INSERT INTO t_users (user_id, name, email_address, paperspace_email_address, verified_in_paperspace, paperspace_user_id, assigned_machine, reservations) VALUES (?,?,?,?,?,?,?,?)'
-                    db.run(insert, ["JBENDE11", "Jacob Bender", "jbende11@depaul.edu", null, 0, null, null, "[CK-89852]"])
+                    db.run(insert, ["JBENDE11", "Jacob Bender", "jbende11@depaul.edu", null, 0, null, null, "{[]}"])
                     console.log('HERE');
                 }
             });
@@ -66,6 +66,7 @@ let db = new sqlite3.Database(DBSOURCE, (err) => {
         //Create t_machines
         db.run(`CREATE TABLE t_machines (
             machine_id text PRIMARY KEY,
+            machine_name text,
             in_use integer,
             state text,
             assigned_to text
@@ -81,8 +82,8 @@ let db = new sqlite3.Database(DBSOURCE, (err) => {
                     })
                 } else {
                     // Table just created, creating some rows
-                    let insert = 'INSERT INTO t_machines (machine_id, in_use, state, assigned_to) VALUES (?,?,?,?)'
-                    db.run(insert, ["psfyw98r0", 0, "off", null])
+                    let insert = 'INSERT INTO t_machines (machine_id, machine_name, in_use, state, assigned_to) VALUES (?,?,?,?,?)'
+                    db.run(insert, ["psfyw98r0", "IRL1", 0, "off", null])
                     console.log('HERE');
                 }
             });

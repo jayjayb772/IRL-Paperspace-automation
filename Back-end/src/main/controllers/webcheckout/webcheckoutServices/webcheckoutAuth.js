@@ -1,4 +1,5 @@
 const request = require('request')
+const {betterError} = require("../../../util/betterError");
 
 /*
 
@@ -65,7 +66,7 @@ async function getSessionId() {
         }
         request.post(`${process.env.WEBCHECKOUT_HOST}/rest/session/start`, options, (err, res) => {
             if (err) {
-                reject({res, err})
+                reject(betterError(501,"Error in start new session",{res, err}))
             }
             let resBody = JSON.parse(res.body);
             console.log(resBody)
@@ -73,7 +74,7 @@ async function getSessionId() {
             resolve(sessionid)
         })
     }).catch(err => {
-        return err;
+        throw  betterError(500,"Error in get session ID",err);
     })
 }
 
@@ -91,14 +92,14 @@ async function setSessionScope(sessionId) {
 
         request.post(`${process.env.WEBCHECKOUT_HOST}/rest/session/setSessionScope`, options, (err, res) => {
             if (err) {
-                reject({res, err})
+                reject(betterError(501,"Error in set scope",{res, err}))
             } else {
                 process.env.SID = sessionId
                 resolve("Successfully set Scope")
             }
         })
     })).catch(err => {
-        return err;
+        throw betterError(500,"Error in set session scope",err);
     })
 }
 
@@ -110,7 +111,7 @@ async function startNewSession() {
         setSessionScope(sid).then(res => {
             resolve(res);
         }).catch(err => {
-            reject(err)
+            reject(betterError(500,"Error in start new session",err))
         })
     }))
 }

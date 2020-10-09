@@ -17,7 +17,8 @@ async function insertUserIfDoesNotExist(user, user_id) {
                     reject(err)
                 })
             }else {
-                resolve("user exists")
+                reject("user exists")
+                //TODO Implement check for changes logic
             }
             }).catch(err => {
             reject(betterError(501, "error in db comparison user", `${user_id}\n${err}`))
@@ -33,7 +34,8 @@ async function insertMachineIfDoesNotExist(machine, machine_id) {
                     resolve(res)
                 })
             }else {
-                resolve("machine exists")
+                reject("machine exists")
+                //TODO Implement check for changes logic
             }
         }).catch(err => {
             reject(betterError(501, "error in db comparison machine", `${machine_id}\n${err}`))
@@ -49,7 +51,8 @@ async function insertReservationIfDoesNotExist(reservation, reservation_id) {
                     resolve(res)
                 })
             }else {
-                resolve("reservation exists")
+                reject("reservation exists")
+                //TODO Implement check for changes logic
             }
         }).catch(err => {
             reject(betterError(501, "error in db comparison reservation", `${reservation_id}\n${err}`))

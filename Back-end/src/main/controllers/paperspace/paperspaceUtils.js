@@ -1,25 +1,36 @@
 const {betterLogging}= require("../../util/betterLogging");
 const {betterError} = require("../../util/betterError");
 const paperspace_node = require('paperspace-node');
+const {updateUser} = require("../../database/databaseFunctions");
+const {insertMachineIfDoesNotExist} = require("../../database/databaseComparison");
+const {machineDTO} = require("../../database/dataObjects");
 
 const paperspace = paperspace_node({
     apiKey: process.env.PAPERSPACE_API_KEY
 });
 
 //region machines
-function listMachines(options={}) {
+async function listMachines(options={}) {
     return new Promise(((resolve, reject) => {
         try {
-            paperspace.machines.list(options, function (err, res) {
-                betterLogging("listMachines", "list function error", err)
-                betterLogging("listMachines", "list function response", res)
+            paperspace.machines.list(options, async function (err, res) {
                 if (err) {
                     reject(betterError(err.statusCode, "Paperspace Machines api call fail", err.message));
                 }
                 if(res.length < 1){
                    reject(betterError(404, "Cannot find Open Machine", "Filtering of machine list by state returned zero matching machines"))
                 }
-                resolve(res);
+                let errors = [];
+                    for await (const machine of res) {
+                        let machineObj = machineDTO(machine);
+                        await insertMachineIfDoesNotExist(machineObj, machineObj.machine_id).then(res => {
+                        }).catch(err => {
+                            errors.push(err)
+                        })
+                    }
+
+                resolve(`${JSON.stringify(res)}\nAdded machines to db with the following errors\n${errors}`);
+
             })
         } catch (err) {
             betterLogging("listMachines", "CATCH ERROR", err)
@@ -76,7 +87,35 @@ function listUsers(options={}) {
         }
     }))
 }
+
+function buildUserVerifiedObject(paperspaceUser){
+    return{
+        paperspace_user_id:paperspaceUser.id,
+        verified_in_paperspace:1
+    }
+}
+
+
+async function verifyUserInPaperspace(user){
+    return new Promise(((resolve, reject) => {
+        listUsers({email:user.paperspace_email_address}).then(res=>{
+            if(res.length !== 1){
+                reject(betterError(404, "Cannot find user in paperspace", `User ${user.user_id} not found in paperspace with email ${user.paperspace_email_address}`))
+            }
+            console.log(res)
+            let updateBody = buildUserVerifiedObject(res[0]);
+            updateUser(user.user_id, updateBody).then(res=>{
+                resolve(res)
+            }).catch(err=>{
+                reject(betterError(500, err, err))
+            })
+        }).catch(err=>{
+            console.log(err)
+            reject(err)
+        })
+    }))
+}
 //endregion
 
 
-module.exports = {listMachines, setMachineAccess, listUsers}
+module.exports = {listMachines, setMachineAccess, listUsers, verifyUserInPaperspace}

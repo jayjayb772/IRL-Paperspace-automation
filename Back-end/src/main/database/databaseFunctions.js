@@ -86,29 +86,47 @@ async function insertUser(userData) {
 
 async function updateUser(user_id, updatedInfo) {
     return new Promise((resolve, reject) => {
-        let sql = 'UPDATE t_reservations SET ';
+        let sql = 'UPDATE t_users SET ';
         let params = [];
         if (updatedInfo.email_address) {
+            if(params >= 1){
+                sql= sql+', '
+            }
             sql = sql + 'email_address=? '
             params.push(updatedInfo.email_address)
         }
         if (updatedInfo.paperspace_email_address) {
+            if(params >= 1){
+                sql= sql+', '
+            }
             sql = sql + 'paperspace_email_address=? '
             params.push(updatedInfo.paperspace_email_address)
         }
         if (updatedInfo.verified_in_paperspace) {
+            if(params >= 1){
+                sql= sql+', '
+            }
             sql = sql + 'verified_in_paperspace=? '
             params.push(updatedInfo.verified_in_paperspace)
         }
         if (updatedInfo.paperspace_user_id) {
+            if(params >= 1){
+                sql= sql+', '
+            }
             sql = sql + 'paperspace_user_id=? '
             params.push(updatedInfo.paperspace_user_id)
         }
         if (updatedInfo.assigned_machine) {
+            if(params >= 1){
+                sql= sql+', '
+            }
             sql = sql + 'assigned_machine=? '
             params.push(updatedInfo.assigned_machine)
         }
         if (updatedInfo.reservations) {
+            if(params >= 1){
+                sql= sql+', '
+            }
             sql = sql + 'reservations=? '
             params.push(updatedInfo.reservations)
         }
@@ -117,9 +135,10 @@ async function updateUser(user_id, updatedInfo) {
         }
         sql = sql + 'WHERE user_id=?'
         params.push(user_id)
+
         db.run(sql, params, (err) => {
             if (err) {
-                reject(betterError(500, "failed to update in t_users", `Failed to updated row ${user_id}`));
+                reject(betterError(500, "failed to update in t_users", `Failed to updated row ${user_id}\n${err}`));
             } else {
                 resolve(`Updated ${user_id}`)
             }
@@ -164,17 +183,26 @@ async function insertMachine(machineData) {
 
 async function updateMachine(machine_id, updatedInfo) {
     return new Promise((resolve, reject) => {
-        let sql = 'UPDATE t_reservations SET ';
+        let sql = 'UPDATE t_machines SET ';
         let params = [];
         if (updatedInfo.in_use) {
+            if(params >= 1){
+                sql= sql+', '
+            }
             sql = sql + 'in_use=? '
             params.push(updatedInfo.in_use)
         }
         if (updatedInfo.state) {
+            if(params >= 1){
+                sql= sql+', '
+            }
             sql = sql + 'state=? '
             params.push(updatedInfo.state)
         }
         if (updatedInfo.assigned_to) {
+            if(params >= 1){
+                sql= sql+', '
+            }
             sql = sql + 'assigned_to=? '
             params.push(updatedInfo.assigned_to)
         }

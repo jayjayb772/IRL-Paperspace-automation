@@ -58,25 +58,25 @@ async function getReservations() {
 
 //TODO build DB Entity to pass to DB
 async function getReservationsAndUpdateDB(){
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         let errors = []
-        getReservations().then(wcoResObjects=>{
-            wcoResObjects.forEach(reservation=>{
-                let resObj = reservationDTO(reservation);
-                let userObj = userDTO(reservation.patron);
-                console.log(resObj);
-                console.log(userObj);
-                insertUserIfDoesNotExist(userObj, userObj.user_id).then(res=>{
-                    console.log(`${userObj.user_id}\n${res}\n`)
-                }).catch(err=>{
-                    errors.push(err)
-                })
-                insertReservationIfDoesNotExist(resObj, resObj.reservation_id).then(res=>{
-                    console.log(`${resObj.reservation_id}\n${res}\n\n\n`)
-                }).catch(err=>{
-                    errors.push(err)
-                })
-            })
+        await getReservations().then(async (wcoResObjects)=>{
+                for await(const reservation of wcoResObjects) {
+
+                    let resObj = reservationDTO(reservation);
+                    let userObj = userDTO(reservation.patron);
+                    await insertUserIfDoesNotExist(userObj, userObj.user_id).then(res => {
+                        //console.log(`${userObj.user_id}\n${res}\n`)
+                    }).catch(err => {
+                        errors.push(err)
+                    })
+                    await insertReservationIfDoesNotExist(resObj, resObj.reservation_id).then(res => {
+                        //console.log(`${resObj.reservation_id}\n${res}\n\n\n`)
+                    }).catch(err => {
+                        errors.push(err)
+                    })
+
+                }
         }).catch(err=>{
             errors.push(err)
         })

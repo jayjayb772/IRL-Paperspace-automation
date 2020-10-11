@@ -69,7 +69,7 @@ async function getSessionId() {
                 reject(betterError(501,"Error in start new session",{res, err}))
             }
             let resBody = JSON.parse(res.body);
-            console.log(resBody)
+            //console.log(resBody)
             let sessionid = resBody.session.sessionid
             resolve(sessionid)
         })

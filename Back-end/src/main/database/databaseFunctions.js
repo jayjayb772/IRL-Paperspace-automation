@@ -2,13 +2,31 @@ const db = require('./database');
 const {betterError} = require("../util/betterError");
 
 //region Reservations
-async function searchReservations(reservation_id = null) {
+async function searchReservationsById(reservation_id = null) {
     return new Promise((resolve, reject) => {
         let sql = 'SELECT * FROM t_reservations'
         let params = []
         if (reservation_id) {
             sql = sql + ' WHERE reservation_id=?'
             params.push(reservation_id)
+        }
+        return db.all(sql, params, (err, rows) => {
+            if (err) {
+                reject(betterError(500, "Could not search reservations", `failed to search reservations ${err}`))
+            } else {
+                resolve(rows);
+            }
+        })
+    })
+}
+
+async function searchReservationsByStatus(status = null) {
+    return new Promise((resolve, reject) => {
+        let sql = 'SELECT * FROM t_reservations'
+        let params = []
+        if (status) {
+            sql = sql + ' WHERE status=?'
+            params.push(status)
         }
         return db.all(sql, params, (err, rows) => {
             if (err) {
@@ -48,6 +66,44 @@ async function updateReservation(reservation_id, status) {
     })
 }
 
+
+async function updateReservationInfo(reservation_id, updatedInfo) {
+    return new Promise((resolve, reject) => {
+        let sql = 'UPDATE t_reservations SET ';
+
+        let params = [];
+        if (updatedInfo.start_ts !== undefined) {
+            sql = sql + 'start_ts=? '
+            params.push(updatedInfo.start_ts)
+        }
+        if (updatedInfo.end_ts !== undefined) {
+            if(params.length >= 1){
+                sql= sql+', '
+            }
+            sql = sql + 'end_ts=? '
+            params.push(updatedInfo.end_ts)
+        }
+        if (updatedInfo.status !== undefined) {
+            if(params.length >=1  ){
+                sql= sql+', '
+            }
+            sql = sql + 'status=? '
+            params.push(updatedInfo.status)
+        }
+
+        sql = sql+' WHERE reservation_id=?'
+        params.push(reservation_id)
+        db.run(sql, params, (err) => {
+            if (err) {
+                reject(betterError(500, "failed to update in t_reservations", `Failed to updated row ${reservation_id} \n ${err}`));
+            } else {
+                resolve(`Updated ${reservation_id}`)
+            }
+        })
+    })
+}
+
+
 //endregion
 
 //region Users
@@ -63,8 +119,24 @@ async function searchUsers(user_id = null) {
             if (err) {
                 reject(betterError(500, "Could not search users", `failed to search users ${err}`))
             } else {
-                console.log(rows)
+                if(user_id!==null){
+                    resolve(rows[0])
+                }else{
                 resolve(rows);
+            }}
+        })
+    })
+}
+
+async function searchUsersEmail(email) {
+    return new Promise((resolve, reject) => {
+        let sql = 'SELECT * FROM t_users WHERE paperspace_email_address=?'
+        let params = [email]
+        return db.all(sql, params, (err, rows) => {
+            if (err) {
+                reject(betterError(500, "Could not search users", `failed to search users ${err}`))
+            } else {
+                resolve(rows[0])
             }
         })
     })
@@ -85,46 +157,62 @@ async function insertUser(userData) {
 }
 
 async function updateUser(user_id, updatedInfo) {
+    console.log("Starting update")
     return new Promise((resolve, reject) => {
+        db.all(`SELECT * FROM t_users WHERE user_id = ?`, [user_id], (err, rows)=>{
+            if(err){
+                reject(betterError(500, "error finding user", `Error finding ${user_id}\n${err}`))
+            }
+            if(rows < 1){
+                reject(betterError(404, "User does not exist", `User ${user_id} does not exist in system`))
+            }
+            if(rows > 1){
+                reject(betterError(500, "Multiple rows returned", "multiple rows found for user"))
+            }
+        })
         let sql = 'UPDATE t_users SET ';
         let params = [];
-        if (updatedInfo.email_address) {
-            if(params >= 1){
+        if (updatedInfo.email_address !== undefined) {
+            if(params.length >= 1){
                 sql= sql+', '
             }
             sql = sql + 'email_address=? '
             params.push(updatedInfo.email_address)
         }
-        if (updatedInfo.paperspace_email_address) {
-            if(params >= 1){
+        if (updatedInfo.paperspace_email_address !== undefined) {
+            if(params.length >= 1){
                 sql= sql+', '
             }
             sql = sql + 'paperspace_email_address=? '
             params.push(updatedInfo.paperspace_email_address)
+            sql= sql+', '
+
+            sql = sql + 'verified_in_paperspace=? '
+            params.push(0)
         }
-        if (updatedInfo.verified_in_paperspace) {
-            if(params >= 1){
+        if (updatedInfo.verified_in_paperspace !== undefined) {
+            if(params.length >= 1){
                 sql= sql+', '
             }
             sql = sql + 'verified_in_paperspace=? '
             params.push(updatedInfo.verified_in_paperspace)
         }
-        if (updatedInfo.paperspace_user_id) {
-            if(params >= 1){
+        if (updatedInfo.paperspace_user_id !== undefined) {
+            if(params.length >= 1){
                 sql= sql+', '
             }
             sql = sql + 'paperspace_user_id=? '
             params.push(updatedInfo.paperspace_user_id)
         }
-        if (updatedInfo.assigned_machine) {
-            if(params >= 1){
+        if (updatedInfo.assigned_machine !== undefined) {
+            if(params.length >= 1){
                 sql= sql+', '
             }
             sql = sql + 'assigned_machine=? '
             params.push(updatedInfo.assigned_machine)
         }
-        if (updatedInfo.reservations) {
-            if(params >= 1){
+        if (updatedInfo.reservations !== undefined) {
+            if(params.length >= 1){
                 sql= sql+', '
             }
             sql = sql + 'reservations=? '
@@ -135,7 +223,6 @@ async function updateUser(user_id, updatedInfo) {
         }
         sql = sql + 'WHERE user_id=?'
         params.push(user_id)
-
         db.run(sql, params, (err) => {
             if (err) {
                 reject(betterError(500, "failed to update in t_users", `Failed to updated row ${user_id}\n${err}`));
@@ -161,7 +248,24 @@ async function searchMachines(machine_id = null) {
             if (err) {
                 reject(betterError(500, "Could not search machines", `failed to search machines ${err}`))
             } else {
+                if(machine_id!== null){
+                    resolve(rows[0])
+                }else{
                 resolve(rows);
+            }}
+        })
+    })
+}
+
+async function searchOpenMachines() {
+    return new Promise((resolve, reject) => {
+        let sql = 'SELECT * FROM t_machines WHERE in_use=?'
+        let params = [0]
+        return db.all(sql, params, (err, rows) => {
+            if (err) {
+                reject(betterError(500, "Could not search machines", `failed to search machines ${err}`))
+            } else {
+                resolve(rows[0]);
             }
         })
     })
@@ -185,22 +289,22 @@ async function updateMachine(machine_id, updatedInfo) {
     return new Promise((resolve, reject) => {
         let sql = 'UPDATE t_machines SET ';
         let params = [];
-        if (updatedInfo.in_use) {
-            if(params >= 1){
+        if (updatedInfo.in_use !== undefined) {
+            if(params.length >= 1){
                 sql= sql+', '
             }
             sql = sql + 'in_use=? '
             params.push(updatedInfo.in_use)
         }
-        if (updatedInfo.state) {
-            if(params >= 1){
+        if (updatedInfo.state !== undefined) {
+            if(params.length >= 1){
                 sql= sql+', '
             }
             sql = sql + 'state=? '
             params.push(updatedInfo.state)
         }
-        if (updatedInfo.assigned_to) {
-            if(params >= 1){
+        if (updatedInfo.assigned_to !== undefined) {
+            if(params.length >= 1){
                 sql= sql+', '
             }
             sql = sql + 'assigned_to=? '
@@ -225,13 +329,17 @@ async function updateMachine(machine_id, updatedInfo) {
 
 
 module.exports = {
-    searchReservations,
+    searchReservationsById,
+    searchReservationsByStatus,
     insertReservation,
     updateReservation,
+    updateReservationInfo,
     searchUsers,
+    searchUsersEmail,
     insertUser,
     updateUser,
     searchMachines,
     insertMachine,
-    updateMachine
+    updateMachine,
+    searchOpenMachines
 }

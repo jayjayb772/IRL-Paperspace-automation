@@ -1,10 +1,14 @@
 const express = require('express');
+const {updateReservationInfo} = require("./databaseFunctions");
+const {reservationDTO} = require("./dataObjects");
+const {insertReservation} = require("./databaseFunctions");
+const {bRes} = require("../util/betterhttpresponse");
 const {verifyUserInPaperspace} = require("../controllers/paperspace/paperspaceUtils");
 const {updateReservation} = require("./databaseFunctions");
 const {updateUser} = require("./databaseFunctions");
 const {updateMachine} = require("./databaseFunctions");
 const {searchMachines} = require("./databaseFunctions");
-const {searchReservations} = require("./databaseFunctions");
+const {searchReservationsById} = require("./databaseFunctions");
 const {searchUsers} = require("./databaseFunctions");
 const dbController = express.Router()
 
@@ -26,8 +30,9 @@ dbController.get('/users/:userid', ((req, res) => {
         })
     }
 ))
+
 dbController.patch('/users/:userid', ((req, res) => {
-        updateUser(req.params.userid, req.body).then(response => {
+    updateUser(req.params.userid, req.body).then(response => {
             res.send(response)
         }).catch(err => {
             res.status(err.statusCode);
@@ -40,13 +45,21 @@ dbController.get('/users/:userid/verify', ((req, res) => {
         if(user.length !== 1){
             res.status(404)
             res.send("Could not find specified user in t_users")
+            return;
         }
         if(user[0].paperspace_email_address === null){
             res.status(400);
             res.send("No paperspace email address given for this user. please use the patch endpoint to update this field")
+            return;
+        }
+        if(user[0].verified_in_paperspace === 1){
+            res.status(200);
+            res.send(bRes(200, "User is verified in paperspace!", "User is verified"))
+            return;
         }
         verifyUserInPaperspace(user[0]).then(verifyRes=>{
-            res.send(verifyRes)
+            res.status(201)
+            res.send(bRes(201, "Successfully verified user in Paperspace", `User ${req.params.userid} is in the paperspace team and ready to be assigned a machine`))
         }).catch(err=>{
             res.status(err.statusCode)
             res.send(err)
@@ -69,7 +82,7 @@ searchUsers(req.params.userid).then(response => {
     }))
 
 dbController.get('/reservations', ((req, res) => {
-        searchReservations().then(response => {
+        searchReservationsById().then(response => {
             res.send(response)
         }).catch(err => {
             res.status(err.statusCode);
@@ -77,8 +90,20 @@ dbController.get('/reservations', ((req, res) => {
         })
     }
 ))
+
+dbController.post('/reservations', ((req, res) => {
+    let reservation = reservationDTO(req.body)
+        insertReservation(reservation).then(response => {
+            res.send(response)
+        }).catch(err => {
+            res.status(err.statusCode);
+            res.send(err)
+        })
+    }
+))
+
 dbController.get('/reservations/:reservationid', ((req, res) => {
-        searchReservations(req.params.reservationid).then(response => {
+        searchReservationsById(req.params.reservationid).then(response => {
             res.send(response)
         }).catch(err => {
             res.status(err.statusCode);
@@ -87,7 +112,7 @@ dbController.get('/reservations/:reservationid', ((req, res) => {
     }
 ))
 dbController.patch('/reservations/:reservationid', ((req, res) => {
-        updateReservation(req.params.reservationid, req.body).then(response => {
+        updateReservationInfo(req.params.reservationid, req.body).then(response => {
             res.send(response)
         }).catch(err => {
             res.status(err.statusCode);
@@ -115,6 +140,7 @@ dbController.get('/machines/:machineid', ((req, res) => {
     }
 ))
 dbController.patch('/machines/:machineid', ((req, res) => {
+    console.log(req.body)
         updateMachine(req.params.machineid, req.body).then(response => {
             res.send(response)
         }).catch(err => {

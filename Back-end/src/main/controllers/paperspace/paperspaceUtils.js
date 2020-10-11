@@ -78,7 +78,7 @@ function listUsers(options={}) {
                     throw betterError(err.statusCode, "Paperspace Users api call fail", err.message);
                 }
                 if(res.length < 1){
-                    reject(betterError(404, "Cannot find User", "fltering of user list by email returned zero matching users"))
+                    reject(betterError(404, "Cannot find User", "User not found in paperspace team. Please contact the IRL to be invited"))
                 }
                 resolve(res);
             })
@@ -105,7 +105,10 @@ async function verifyUserInPaperspace(user){
             console.log(res)
             let updateBody = buildUserVerifiedObject(res[0]);
             updateUser(user.user_id, updateBody).then(res=>{
-                resolve(res)
+                let body = {
+                    dbRes: res
+                }
+                resolve(body)
             }).catch(err=>{
                 reject(betterError(500, err, err))
             })

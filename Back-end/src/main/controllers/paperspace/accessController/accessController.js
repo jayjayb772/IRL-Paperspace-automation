@@ -123,7 +123,7 @@ accessController.post('/revoke-access-from-email', async (req, res) => {
     revokeAccessFromEmail(req.body).then(paperspaceRes=>{
         res.send(`Removed ${req.body.email}'s access to paperspace machine ${paperspaceRes.machineId}`)
     }).catch(err=>{
-        res.status(err.statusCode);
+        res.status((err.statusCode ? err.statusCode : 500));
         res.send(err);
     })
 })

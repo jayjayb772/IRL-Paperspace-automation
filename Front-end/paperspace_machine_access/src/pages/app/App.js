@@ -7,6 +7,8 @@ import Nav from "../../components/Nav";
 import {BrowserRouter, Route, Router, Switch} from "react-router-dom";
 import axios from "axios";
 import md5 from "md5";
+import SetPaperspacePage from "../setPaperspace/SetPaperspacePage";
+import VerifyPaperspacePage from "../Verify/VerifyPaperspacePage";
 
 
 const apiUrl = process.env.REACT_APP_API_URL
@@ -27,43 +29,25 @@ axios.interceptors.request.use(
 );
 
 function App(){
-    const [name, setName] = useState("")
-    const [password, setPassword] = useState("")
-    const [revealPass, setRevealPass] = useState(false)
+
     const storedJwt = localStorage.getItem('token');
     const [jwt, setJwt] = useState(storedJwt || null);
-
-
-    const showpass = function(event){
-        event.preventDefault();
-        setRevealPass(revealPass ? false : true)
-    }
+    const [user, setUser] = useState(()=>{return "none"})
     const logout = function(event){
-        event.preventDefault()
         localStorage.removeItem('token')
         setJwt(null);
+        setUser("")
+    }
+    const setJwtPass = function(jwt){
+        setJwt(jwt)
+    }
+    const setUserP = function(user){
+        setUser(user)
     }
 
 
-    const handleClick = async (event) => {
-        event.preventDefault()
-        console.log("handle click")
-        const { data } = await axios.post(
-                                `${apiUrl}/login`,
-                                {name: name, password: md5(password)})
-                                    .catch(err=>{
-                                        alert(`Could not log in`)
-                                        setPassword(()=>"");
-                                        setName(()=>"");
-                                    });
-        setPassword(()=>"");
-        setName(()=>"");
-        localStorage.setItem('token', data.token);
-        setJwt(data.token);
-    };
 
-
-    if(jwt !== null) {
+    if(user === "IRL") {
         return (
             <div className="center">
                 <Nav logout={logout}/>
@@ -78,28 +62,27 @@ function App(){
 
             </div>
         )
+    }else if(user === "guest"){
+       return(
+           <div className="center">
+               <Nav user={"guest"} verified={true}/>
+               <Switch>
+                   <Route exact path="/" component={()=>(<Home setJwtP={setJwtPass} user={"guest"} setUser={setUserP} verified={true}/>)}/>
+                   <Route exact path="/SetPaperspace" component={SetPaperspacePage}/>
+                   <Route exact path="/VerifyPaperspace" component={VerifyPaperspacePage}/>
+               </Switch>
+
+           </div>
+       )
     }else{
         return (
         <div className="center">
-            <Nav logout={false}/>
-            <div className="login" >
-                <form onSubmit={handleClick}>
-                    <label>
-                        Username:
-                        <input type="text" value={name} onChange={e => setName(e.target.value)} className="input"/>
-                    </label>
-                    <label>
-                        Password:
-                        <input type={revealPass ? "text" : "password"} value={password} onChange={e => setPassword(e.target.value)} className="input"/>
-                    </label>
-                    <div onMouseEnter={showpass} onMouseLeave={showpass} className="showPass">Show password</div>
-                    <br/>
-                    <button type="submit">
-                        Login
-                    </button>
-                </form>
-
-            </div>
+            <Nav user={"guest"} verified={false}/>
+            <Switch>
+                <Route exact path="/" component={()=>(<Home setJwtP={setJwtPass} user={"guest"} setUser={setUserP}/>)}/>
+                <Route exact path="/SetPaperspace" component={SetPaperspacePage}/>
+                <Route exact path="/VerifyPaperspace" component={VerifyPaperspacePage}/>
+            </Switch>
 
         </div>
         )

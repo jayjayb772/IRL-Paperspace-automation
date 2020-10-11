@@ -14,6 +14,9 @@ const {loginToSite} = require("./src/main/controllers/paperspace/accessControlle
 const db = require('./src/main/database/database')
 const webcheckoutController = require("./src/main/controllers/webcheckout/webcheckoutController");
 const dbController = require("./src/main/database/dbController");
+const {betterLogging} = require("./src/main/util/betterLogging");
+const {iterateReservationsRevoke} = require("./src/main/autoAssignMachines/iterateReservations");
+const {iterateReservationsGive} = require("./src/main/autoAssignMachines/iterateReservations");
 const {startNewSession} = require("./src/main/controllers/webcheckout/webcheckoutServices/webcheckoutAuth");
 const {getReservationsAndUpdateDB} = require("./src/main/controllers/webcheckout/webcheckoutServices/webcheckoutReservations");
 const swagOptions = {
@@ -62,14 +65,26 @@ const jwtSecret = process.env.JWT_SECRET;
  */
 
 app.post('/login', async (req, res) => {
+    console.log("LOG")
     loginToSite(req.body).then(loginRes=>{
+        console.log(loginRes)
+        if(loginRes.statusCode){
+            res.status(loginRes.statusCode)
+            res.send(loginRes)
+        }
         res.json({
             token: jsonwebtoken.sign({ user: `IRL` }, jwtSecret)
         });
     }).catch(err=>{
+        console.log(err)
         res.status(err.statusCode);
-        res.send(err);
+        res.send({data:err});
     })
+})
+app.get('/login', async (req, res) => {
+        res.json({
+            token: jsonwebtoken.sign({ user: `guest` }, jwtSecret)
+        })
 })
 
 app.use(jwt({ secret: jwtSecret, algorithms: ['HS256'] }));
@@ -91,20 +106,38 @@ app.use(function(req, res){
 });
 
 function handleTimeout(){
-    console.log("This is running every 5 minutes")
-    getReservationsAndUpdateDB().then(r => {
-        console.log("Successfully ran update res")
-        console.log(r)
+    // console.log("This is running every 5 minutes")
+    // getReservationsAndUpdateDB().then(r => {
+    //     console.log("Successfully ran update res")
+    //     console.log(r)
+    // }).catch(err=>{
+    //     console.error(err)
+    // })
+    iterateReservationsGive().then(res=>{
+        betterLogging("iterate Give", "Give response",res)
     }).catch(err=>{
-        console.error(err)
+        betterLogging("iterate Give", "Give err",err)
     })
+    iterateReservationsRevoke().then(res=>{
+        betterLogging("iterate Revoke", "Revoke response",res)
+    }).catch(err=>{
+        betterLogging("iterate Revoke", "Revoke err",err)
+    })
+
 }
-if(!process.env.SID) {
+
+
+function restartSession(){
     startNewSession().then(r => {
         console.log(r)
     })
 }
 
+if(!process.env.SID) {
+    restartSession()
+}
+
 setInterval(handleTimeout, 60000*5)
+setInterval(restartSession, 60000*10)
 
 module.exports = app;

@@ -1,7 +1,13 @@
 const sqlite3 = require('sqlite3').verbose()
 const md5 = require('md5')
+let DBSOURCE
+if(process.env.NODE_ENV === "test"){
+     DBSOURCE = "reservationsDBTEST.sqlite"
+}else{
+    DBSOURCE = "reservationsDB.sqlite"
 
-const DBSOURCE = "reservationsDB.sqlite"
+}
+
 
 let db = new sqlite3.Database(DBSOURCE, (err) => {
     if (err) {

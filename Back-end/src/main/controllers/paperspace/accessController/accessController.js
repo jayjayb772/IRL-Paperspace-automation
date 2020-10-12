@@ -49,7 +49,7 @@ const accessController = express.Router()
 
 
 accessController.get('/', (req, res) => {
-    res.send("access Controller home");
+    res.send({msg:"access Controller home"});
 })
 
 

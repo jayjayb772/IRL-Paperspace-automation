@@ -119,6 +119,8 @@ async function iterateReservationsRevoke() {
                 }
                 try {
                     let resMoment = moment(reservation.end_ts)
+                    console.log(resMoment)
+                    console.log(curTime)
                     let minsSinceRes = resMoment.diff(curTime, 'minutes')
                     console.log(minsSinceRes)
                     if (minsSinceRes <= -5) {

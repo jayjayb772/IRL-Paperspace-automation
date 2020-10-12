@@ -138,7 +138,7 @@ app.get('/login', async (req, res) => {
         })
 })
 
-if(process.env.ENV !== "dev"){
+if(process.env.NODE_ENV !== "development"){
 app.use(jwt({ secret: jwtSecret, algorithms: ['HS256'] }));
 }
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))

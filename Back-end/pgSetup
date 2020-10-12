@@ -1,0 +1,10 @@
+npm install sequelize sequelize-cli pg pg-hstore -g
+touch .sequelizerc ->Insert code
+sequelize init ->insert code
+createdb dev_db -U IRL
+createdb test_db -U postgres
+sequelize model:generate --name User --attributes user_id:string,name:string,email_address:string,paperspace_email_adress:string,verified_in_paperspace:boolean,paperspace_user_id:string,assigned_machine:string,reservations:string
+sequelize model:generate --name Reservation --attributes reservation_id:string,user_id:string,start_ts:string,end_ts:string,status:string
+sequelize model:generate --name Machine --attributes machine_id:string,machine_name:string,in_use:boolean,state:string,assigned_to:string
+
+sequelize-auto -h localhost -d dev_db -u jayja -x admin -p 5432 --dialect postgres -c ./database/config -o ./database/models -t t_users

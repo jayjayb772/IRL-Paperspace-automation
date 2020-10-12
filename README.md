@@ -11,4 +11,18 @@ automates the reservation process for paperspace machines
   - Default set to localhost:3000
   - To build/serve, run _npm run-script build_ then _serve -s build_ Defaults to localhost:5000
   
+  #Backend .env
+  - PAPERSPACE_API_KEY
+  - DEFAULT_USER
+  - DEFAULT_PASSWORD
+  - JWT_SECRET
+  - WEBCHECKOUT_UN
+  - WEBCHECKOUT_PWD
+  - WEBCHECKOUT_HOST
+  
+  #Frontend .env
+  - REACT_APP_LOGIN_URL
+  - REACT_APP_API_URL
+  
 For documentation, see /Back-end/designDocs for flow charts, go to [localhost:8080/api-docs](http://localhost:8080/api-docs) to see API and examples while running locally.
+

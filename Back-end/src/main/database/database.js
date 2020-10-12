@@ -91,7 +91,7 @@ let db = new sqlite3.Database(DBSOURCE, (err) => {
     }
 });
 
-//TODO DB INIT Function with all tables and rows
+//DB INIT Function with all tables and rows
 
 
 module.exports = db

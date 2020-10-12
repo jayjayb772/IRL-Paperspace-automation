@@ -12,6 +12,7 @@ const {searchReservationsById} = require("./databaseFunctions");
 const {searchUsers} = require("./databaseFunctions");
 const dbController = express.Router()
 
+//TODO Document this with sawgger GET /users
 dbController.get('/users', ((req, res) => {
         searchUsers().then(response => {
             res.send(response)
@@ -21,6 +22,7 @@ dbController.get('/users', ((req, res) => {
         })
     }
 ))
+//TODO Document this with sawgger GET /users/:userid
 dbController.get('/users/:userid', ((req, res) => {
         searchUsers(req.params.userid).then(response => {
             res.send(response)
@@ -30,7 +32,7 @@ dbController.get('/users/:userid', ((req, res) => {
         })
     }
 ))
-
+//TODO Document this with sawgger PATCH /users/:userid
 dbController.patch('/users/:userid', ((req, res) => {
     updateUser(req.params.userid, req.body).then(response => {
             res.send(response)
@@ -40,6 +42,9 @@ dbController.patch('/users/:userid', ((req, res) => {
         })
     }
 ))
+//TODO Write Post /users
+
+//TODO Document this with sawgger GET /users/:userid/verify
 dbController.get('/users/:userid/verify', ((req, res) => {
     searchUsers(req.params.userid).then(user=>{
         if(user.length !== 1){
@@ -68,19 +73,8 @@ dbController.get('/users/:userid/verify', ((req, res) => {
         res.status(err.statusCode)
         res.send(err)
     })
-
-
-
-    /*
-searchUsers(req.params.userid).then(response => {
-        res.send(response)
-    }).catch(err => {
-        res.status(err.statusCode);
-        res.send(err)
-    })
-*/
     }))
-
+//TODO Document this with sawgger GET /reservations
 dbController.get('/reservations', ((req, res) => {
         searchReservationsById().then(response => {
             res.send(response)
@@ -90,7 +84,7 @@ dbController.get('/reservations', ((req, res) => {
         })
     }
 ))
-
+//TODO Document this with sawgger POST /reservations
 dbController.post('/reservations', ((req, res) => {
     let reservation = reservationDTO(req.body)
         insertReservation(reservation).then(response => {
@@ -102,6 +96,7 @@ dbController.post('/reservations', ((req, res) => {
     }
 ))
 
+//TODO Document this with sawgger GET /reservations/:reservationid
 dbController.get('/reservations/:reservationid', ((req, res) => {
         searchReservationsById(req.params.reservationid).then(response => {
             res.send(response)
@@ -111,6 +106,7 @@ dbController.get('/reservations/:reservationid', ((req, res) => {
         })
     }
 ))
+//TODO Document this with sawgger PATCH /reservations/:reservationid
 dbController.patch('/reservations/:reservationid', ((req, res) => {
         updateReservationInfo(req.params.reservationid, req.body).then(response => {
             res.send(response)
@@ -120,7 +116,7 @@ dbController.patch('/reservations/:reservationid', ((req, res) => {
         })
     }
 ))
-
+//TODO Document this with sawgger GET /machines
 dbController.get('/machines', ((req, res) => {
         searchMachines().then(response => {
             res.send(response)
@@ -130,6 +126,7 @@ dbController.get('/machines', ((req, res) => {
         })
     }
 ))
+//TODO Document this with sawgger GET /machines/:machineid
 dbController.get('/machines/:machineid', ((req, res) => {
         searchMachines(req.params.machineid).then(response => {
             res.send(response)
@@ -139,6 +136,8 @@ dbController.get('/machines/:machineid', ((req, res) => {
         })
     }
 ))
+
+//TODO Document this with sawgger PATCH /machines/:machineid
 dbController.patch('/machines/:machineid', ((req, res) => {
     console.log(req.body)
         updateMachine(req.params.machineid, req.body).then(response => {
@@ -149,5 +148,7 @@ dbController.patch('/machines/:machineid', ((req, res) => {
         })
     }
 ))
+
+//TODO Write POST /machines
 
 module.exports = dbController

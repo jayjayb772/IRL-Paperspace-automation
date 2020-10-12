@@ -51,7 +51,7 @@ postRes = JSON.parse(res.body.toString('utf-8'));
 
 //
 
-//TODO Get Session ID
+//Get Session ID
 async function getSessionId() {
     return new Promise((resolve, reject) => {
         let postBody = {
@@ -78,7 +78,7 @@ async function getSessionId() {
     })
 }
 
-//TODO Set Session Scope with ID
+//Set Session Scope with ID
 async function setSessionScope(sessionId) {
     return new Promise(((resolve, reject) => {
         let postBody = {
@@ -104,7 +104,7 @@ async function setSessionScope(sessionId) {
 }
 
 
-//TODO LOGIN-> Set Session Scope-> Return Session id
+//LOGIN-> Set Session Scope-> Return Session id
 async function startNewSession() {
     return new Promise((async (resolve, reject) => {
         let sid = await getSessionId()

@@ -106,13 +106,13 @@ app.use(function(req, res){
 });
 
 function handleTimeout(){
-    // console.log("This is running every 5 minutes")
-    // getReservationsAndUpdateDB().then(r => {
-    //     console.log("Successfully ran update res")
-    //     console.log(r)
-    // }).catch(err=>{
-    //     console.error(err)
-    // })
+    console.log("This is running every 5 minutes")
+    getReservationsAndUpdateDB().then(r => {
+        console.log("Successfully ran update res")
+        console.log(r)
+    }).catch(err=>{
+        console.error(err)
+    })
     iterateReservationsGive().then(res=>{
         betterLogging("iterate Give", "Give response",res)
     }).catch(err=>{

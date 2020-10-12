@@ -19,7 +19,6 @@ async function insertUserIfDoesNotExist(user, user_id) {
                 })
             }else {
                 reject("user exists")
-                //TODO Implement check for changes logic
             }
             }).catch(err => {
             reject(betterError(501, "error in db comparison user", `${user_id}\n${err}`))
@@ -36,7 +35,6 @@ async function insertMachineIfDoesNotExist(machine, machine_id) {
                 })
             }else {
                 reject("machine exists")
-                //TODO Implement check for changes logic
             }
         }).catch(err => {
             reject(betterError(501, "error in db comparison machine", `${machine_id}\n${err}`))

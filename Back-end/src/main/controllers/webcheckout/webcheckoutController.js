@@ -5,32 +5,7 @@ const webcheckoutController = express.Router()
 const {startNewSession} = require('./webcheckoutServices/webcheckoutAuth')
 
 
-/**
- * @swagger
- *
- * definitions:
- *
- *   Email:
- *    type: object
- *    required:
- *     - email
- *    properties:
- *     email:
- *      type: string
- *      format: message
- *      example: "email@email.com"
- *
- *   State:
- *    type: object
- *    required:
- *     - state
- *    properties:
- *     state:
- *      type: string
- *      format: message
- *      example: "ready"
- *
- */
+
 
 /**
  * @swagger
@@ -88,14 +63,14 @@ webcheckoutController.get('/reservations', ((req, res) => {
                 res.send(err)
             })
         } else {
-            res.status(401)
+            res.status(405)
             res.send("MUST START SESSION BEFORE CALLING WCO")
         }
     }
 
 ))
 
-//TODO Find New User
+
 
 
 module.exports = webcheckoutController

@@ -39,6 +39,7 @@ async function listMachines(options={}) {
     }))
 }
 
+
 function setMachineAccess(userId, machineId, enableAccess) {
     return new Promise(((resolve, reject) => {
         try {

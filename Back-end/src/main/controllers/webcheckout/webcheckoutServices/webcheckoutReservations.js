@@ -4,11 +4,10 @@ const {insertReservationIfDoesNotExist} = require("../../../database/databaseCom
 const {insertUserIfDoesNotExist} = require("../../../database/databaseComparison");
 const {userDTO} = require("../../../database/dataObjects");
 const {reservationDTO} = require("../../../database/dataObjects");
-//TODO Broad schedule search with params
-
-//TODO build params for search
 const {betterError} = require("../../../util/betterError");
 
+
+//build params for search
 function reservationParams() {
     return {
         "sessionid": `${process.env.SID}`,
@@ -53,14 +52,8 @@ async function getReservations() {
     })
 }
 
-//TODO Get active
 
-//TODO Get Past
-
-
-//TODO parse response
-
-//TODO build DB Entity to pass to DB
+//build DB Entity to pass to DB
 async function getReservationsAndUpdateDB(){
     return new Promise(async (resolve, reject) => {
         let errors = []
@@ -91,7 +84,7 @@ async function getReservationsAndUpdateDB(){
     })
 }
 
-//TODO DB stuff
+
 
 
 

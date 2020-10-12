@@ -11,6 +11,7 @@ const {listMachines, listUsers, setMachineAccess} = require("../paperspaceUtils"
 function giveAccessFromEmail(reqBody) {
     return new Promise((async (resolve, reject) => {
         try {
+
             betterLogging("giveAccessFromEmail", "Starting process", reqBody)
             let user = await listUsers({email:reqBody.email})
             betterLogging("giveAccessFromEmail", "finished getting user", user)

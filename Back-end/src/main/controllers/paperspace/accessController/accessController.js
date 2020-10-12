@@ -59,10 +59,12 @@ accessController.get('/', (req, res) => {
  * /access/give-access-from-email:
  *   post:
  *     description: gives access to machine
+ *     tags:
+ *       - paperspaceAccess
  *     produces:
  *       - application/json
  *     requestBody:
- *      description: Optional description in *Markdown*
+ *      description: Request body for giving access
  *      required: true
  *      content:
  *       application/json:
@@ -97,6 +99,8 @@ accessController.post('/give-access-from-email', async (req, res) => {
  * /access/revoke-access-from-email:
  *   post:
  *     description: revokes access to machine
+ *     tags:
+ *       - paperspaceAccess
  *     produces:
  *       - application/json
  *     requestBody:

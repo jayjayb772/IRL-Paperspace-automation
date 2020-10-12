@@ -48,7 +48,7 @@ function userEntity(userRow){
 function reservationDTO(reservationInfo){
     return{
         reservation_id: reservationInfo.name,
-        user_id:reservationInfo.patron.userid,
+        user_id:reservationInfo.patron ? reservationInfo.patron.userid : reservationInfo.user_id ,
         start_ts:reservationInfo.startTime,
         end_ts:reservationInfo.endTime,
         status:reservationInfo.type

@@ -109,6 +109,7 @@ async function updateReservationInfo(reservation_id, updatedInfo) {
 //region Users
 async function searchUsers(user_id = null) {
     return new Promise((resolve, reject) => {
+        console.log(user_id)
         let sql = 'SELECT * FROM t_users'
         let params = []
         if (user_id) {

@@ -27,8 +27,42 @@ const swagOptions = {
             version: '1.0.0', // Version (required)
         },
     },
+    tags: [
+        {
+            name: 'paperspaceUtils',
+            description: 'Paperspace Utility endpoints'
+        },
+        {
+            name: 'paperspaceAccess',
+            description: 'Paperspace Access control endpoints'
+        },
+        {
+            name: 'wco',
+            description: 'Webcheckout endpoints'
+        },{
+            name: 'db',
+            description: 'Database Endpoints'
+        },{
+            name: 'machine',
+            description: 'Machine Endpoints'
+        },{
+            name: 'user',
+            description: 'User Endpoints'
+        },{
+            name: 'reserve',
+            description: 'Reservation Endpoints'
+        },{
+            name: 'access',
+            description: 'Login Endpoints'
+        }
+
+    ],
     // Path to the API docs
-    apis: ['./src/main/controllers/*/*.js', './*.js', './src/main/controllers/paperspace/utilsController/*.js', './src/main/controllers/paperspace/accessController/*.js'],
+    apis: ['./src/main/controllers/webcheckout/webcheckoutController.js',
+        './src/main/controllers/paperspace/utilsController.js',
+        './src/main/controllers/paperspace/accessController/accessController.js',
+        './src/main/database/dbController.js',
+        './*.js'],
 };
 const swaggerSpec = swaggerJSDoc(swagOptions);
 
@@ -46,8 +80,10 @@ const jwtSecret = process.env.JWT_SECRET;
  *     description: login to change access
  *     produces:
  *       - application/json
+ *     tags:
+ *       - access
  *     requestBody:
- *      description: Optional description in *Markdown*
+ *      description: Body used to log in as admin
  *      required: true
  *      content:
  *       application/json:
@@ -63,7 +99,6 @@ const jwtSecret = process.env.JWT_SECRET;
  *       500:
  *         description: Internal Server Error
  */
-
 app.post('/login', async (req, res) => {
     console.log("LOG")
     loginToSite(req.body).then(loginRes=>{
@@ -81,14 +116,31 @@ app.post('/login', async (req, res) => {
         res.send({data:err});
     })
 })
+
+/**
+ * @swagger
+ * /login:
+ *   get:
+ *     description: logs in and gets token as guest with limited functionality
+ *     tags:
+ *       - access
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       201:
+ *         description: got token
+ *       500:
+ *         description: Internal Server Error
+ */
 app.get('/login', async (req, res) => {
         res.json({
             token: jsonwebtoken.sign({ user: `guest` }, jwtSecret)
         })
 })
 
+if(process.env.ENV !== "dev"){
 app.use(jwt({ secret: jwtSecret, algorithms: ['HS256'] }));
-
+}
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
 

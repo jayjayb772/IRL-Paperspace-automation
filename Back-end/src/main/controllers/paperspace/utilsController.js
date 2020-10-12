@@ -40,6 +40,8 @@ utilsController.get('/', (req, res) => {
  * /utils/machines:
  *   post:
  *     description: returns machines with given state
+ *     tags:
+ *       - paperspaceUtils
  *     produces:
  *       - application/json
  *     requestBody:
@@ -76,6 +78,8 @@ utilsController.post('/machines', async (req, res) => {
  * /utils/machines:
  *   get:
  *     description: gets all machines in team
+ *     tags:
+ *       - paperspaceUtils
  *     produces:
  *       - application/json
  *     responses:
@@ -102,6 +106,8 @@ utilsController.get('/machines', async (req, res) => {
  * /utils/users:
  *   post:
  *     description: gets users based on email
+ *     tags:
+ *       - paperspaceUtils
  *     produces:
  *       - application/json
  *     requestBody:
@@ -138,6 +144,8 @@ utilsController.post('/users', async (req, res) => {
  * /utils/users:
  *   get:
  *     description: gets all users in team
+ *     tags:
+ *       - paperspaceUtils
  *     produces:
  *       - application/json
  *     responses:

@@ -13,6 +13,8 @@ const {startNewSession} = require('./webcheckoutServices/webcheckoutAuth')
  * /wco/startSession:
  *   get:
  *     description: sets Session id and authenticates
+ *     tags:
+ *       - wco
  *     produces:
  *       - application/json
  *     responses:
@@ -44,6 +46,8 @@ webcheckoutController.get('/startSession', ((req, res) => {
  * /wco/reservations:
  *   get:
  *     description: lists all reservations from wco api
+ *     tags:
+ *       - wco
  *     produces:
  *       - application/json
  *     responses:

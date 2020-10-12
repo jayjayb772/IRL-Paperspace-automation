@@ -1,0 +1,883 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "IRL Paperspace control API",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/wco/startSession": {
+      "get": {
+        "description": "sets Session id and authenticates",
+        "tags": [
+          "wco"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "501": {
+            "description": "WCO API Error"
+          }
+        }
+      }
+    },
+    "/wco/reservations": {
+      "get": {
+        "description": "lists all reservations from wco api",
+        "tags": [
+          "wco"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "501": {
+            "description": "WCO API Error"
+          }
+        }
+      }
+    },
+    "/utils/machines": {
+      "post": {
+        "description": "returns machines with given state",
+        "tags": [
+          "paperspaceUtils"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "requestBody": {
+          "description": "state",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/definitions/State"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "found machines with state"
+          },
+          "400": {
+            "description": "Bad request body"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "501": {
+            "description": "Paperspace API Error"
+          }
+        }
+      },
+      "get": {
+        "description": "gets all machines in team",
+        "tags": [
+          "paperspaceUtils"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "send machine list"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "501": {
+            "description": "Paperspace API Error"
+          }
+        }
+      }
+    },
+    "/utils/users": {
+      "post": {
+        "description": "gets users based on email",
+        "tags": [
+          "paperspaceUtils"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "requestBody": {
+          "description": "email",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/definitions/Email"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successfully got user"
+          },
+          "400": {
+            "description": "Bad request body"
+          },
+          "404": {
+            "description": "user not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "501": {
+            "description": "Paperspace API Error"
+          }
+        }
+      },
+      "get": {
+        "description": "gets all users in team",
+        "tags": [
+          "paperspaceUtils"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "send user list"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "501": {
+            "description": "Paperspace API Error"
+          }
+        }
+      }
+    },
+    "/access/give-access-from-email": {
+      "post": {
+        "description": "gives access to machine",
+        "tags": [
+          "paperspaceAccess"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "requestBody": {
+          "description": "Request body for giving access",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/definitions/EnableAccessRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successfully granted access"
+          },
+          "400": {
+            "description": "Bad request body"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "501": {
+            "description": "Paperspace API Error"
+          }
+        }
+      }
+    },
+    "/access/revoke-access-from-email": {
+      "post": {
+        "description": "revokes access to machine",
+        "tags": [
+          "paperspaceAccess"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "requestBody": {
+          "description": "Optional description in *Markdown*",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/definitions/EnableAccessRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successfully granted access"
+          },
+          "400": {
+            "description": "Bad request body"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "501": {
+            "description": "Paperspace API Error"
+          }
+        }
+      }
+    },
+    "/database/users": {
+      "get": {
+        "description": "gets all users in db",
+        "tags": [
+          "user"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "send user list"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "description": "adds user to database",
+        "tags": [
+          "user"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "requestBody": {
+          "description": "Request body for adding user to the database",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/definitions/User"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "successfully added user"
+          },
+          "400": {
+            "description": "Bad request body"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/database/users/{userid}": {
+      "get": {
+        "description": "gets user from specified id",
+        "tags": [
+          "user"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userid",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "WCO user id of user you are updating"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "send user"
+          },
+          "404": {
+            "description": "user not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "patch": {
+        "description": "updates user in database",
+        "tags": [
+          "user"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userid",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "WCO user id of user you are updating"
+          }
+        ],
+        "requestBody": {
+          "description": "Request body for updating user in the database, can use all, some, or 1 params",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/definitions/User"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "successfully updated user"
+          },
+          "400": {
+            "description": "Bad request body"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/database/users/{userid}/verify": {
+      "get": {
+        "description": "verifys user is in paperspace team and updates db accordingly",
+        "tags": [
+          "user"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userid",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "WCO user id of user you are verifying"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "user is verified"
+          },
+          "201": {
+            "description": "verified user and updated"
+          },
+          "400": {
+            "description": "bad request"
+          },
+          "404": {
+            "description": "user does not exist"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/database/reservations": {
+      "get": {
+        "description": "gets all reservations in db",
+        "tags": [
+          "reserve"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "send reservation list"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "description": "adds reservation to database",
+        "tags": [
+          "reserve"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "requestBody": {
+          "description": "Request body for adding reservation to the database",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/definitions/Reservation"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "successfully added reservation"
+          },
+          "400": {
+            "description": "Bad request body"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/database/reservations/{reservationid}": {
+      "get": {
+        "description": "gets reservation from specified id",
+        "tags": [
+          "reserve"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "reservationid",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "WCO name of reservation"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "send reservation"
+          },
+          "404": {
+            "description": "reservation not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "patch": {
+        "description": "updates reservation in database",
+        "tags": [
+          "reserve"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "reservationid",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "id of reservation you are updating"
+          }
+        ],
+        "requestBody": {
+          "description": "Request body for updating reservation in the database",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/definitions/Reservation"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "successfully updated reservation"
+          },
+          "400": {
+            "description": "Bad request body"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/database/machines": {
+      "get": {
+        "description": "gets all machines in DB",
+        "tags": [
+          "machine"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "send machine list"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "description": "adds machine to database",
+        "tags": [
+          "machine"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "requestBody": {
+          "description": "Request body for adding machine to the database",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/definitions/Machine"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "successfully added machine"
+          },
+          "400": {
+            "description": "Bad request body"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/database/machines/{machineid}": {
+      "get": {
+        "description": "gets machine from specified id",
+        "tags": [
+          "machine"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "machineid",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "paperspace machine_id"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "send machine"
+          },
+          "404": {
+            "description": "machine not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "patch": {
+        "description": "adds reservation to database",
+        "tags": [
+          "machine"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "machineid",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "id of machine you are updating"
+          }
+        ],
+        "requestBody": {
+          "description": "Request body for updating machine in the database",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/definitions/Machine"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "successfully updated machine"
+          },
+          "400": {
+            "description": "Bad request body"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "description": "login to change access",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "access"
+        ],
+        "requestBody": {
+          "description": "Body used to log in as admin",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/definitions/LoginRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successfully logged in"
+          },
+          "400": {
+            "description": "Bad request body"
+          },
+          "401": {
+            "description": "not authorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "get": {
+        "description": "logs in and gets token as guest with limited functionality",
+        "tags": [
+          "access"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "201": {
+            "description": "got token"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "EnableAccessRequest": {
+      "type": "object",
+      "required": [
+        "name",
+        "email"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "format": "name",
+          "description": "Your name",
+          "example": "Your name"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Email address associated with paperspace account",
+          "example": "yourpaperspace@email.com"
+        }
+      }
+    },
+    "LoginRequest": {
+      "type": "object",
+      "required": [
+        "name",
+        "password"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "format": "name",
+          "description": "Your username",
+          "example": "your username"
+        },
+        "password": {
+          "type": "string",
+          "format": "password",
+          "description": "password",
+          "example": "password"
+        }
+      }
+    },
+    "User": {
+      "type": "object",
+      "properties": {
+        "user_id": {
+          "type": "string",
+          "format": "message",
+          "example": "DPAUL1234"
+        },
+        "name": {
+          "type": "string",
+          "format": "message",
+          "example": "De Paul"
+        },
+        "email_address": {
+          "type": "string",
+          "format": "message",
+          "example": "myemail@depaul.edu"
+        },
+        "paperspace_email_address": {
+          "type": "string",
+          "format": "message",
+          "example": "myemail@email.com"
+        },
+        "verified_in_paperspace": {
+          "type": "integer",
+          "format": "message",
+          "example": "0 or 1"
+        },
+        "paperspace_user_id": {
+          "type": "string",
+          "format": "message",
+          "example": "userId or null"
+        },
+        "assigned_machine": {
+          "type": "string",
+          "format": "message",
+          "example": "machineID or null"
+        },
+        "reservations": {
+          "type": "string",
+          "format": "message",
+          "example": "['CK-012345']"
+        }
+      }
+    },
+    "Reservation": {
+      "type": "object",
+      "properties": {
+        "reservation_id": {
+          "type": "string",
+          "format": "message",
+          "example": "CK-012345"
+        },
+        "user_id": {
+          "type": "string",
+          "format": "message",
+          "example": "DPAUL123"
+        },
+        "start_ts": {
+          "type": "string",
+          "format": "message",
+          "example": "YYYY-MM-DDTHH:MM:SS.000000-05:00"
+        },
+        "end_ts": {
+          "type": "string",
+          "format": "message",
+          "example": "YYYY-MM-DDTHH:MM:SS.000000-05:00"
+        },
+        "status": {
+          "type": "string",
+          "format": "message",
+          "example": "RESERVATION"
+        }
+      }
+    },
+    "Machine": {
+      "type": "object",
+      "properties": {
+        "machine_id": {
+          "type": "string",
+          "format": "message",
+          "example": "ps29124"
+        },
+        "machine_name": {
+          "type": "string",
+          "format": "message",
+          "example": "IRL1"
+        },
+        "in_use": {
+          "type": "integer",
+          "format": "message",
+          "example": "0 or 1"
+        },
+        "state": {
+          "type": "string",
+          "format": "message",
+          "example": "ready"
+        },
+        "assigned_to": {
+          "type": "string",
+          "format": "message",
+          "description": "paperspace user id of assigned user",
+          "example": "us12314"
+        }
+      }
+    }
+  },
+  "components": {},
+  "tags": []
+}

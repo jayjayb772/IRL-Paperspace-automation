@@ -32,18 +32,18 @@ function SetPaperspaceForm(props){
             setwcoId(()=>"");
         })
 
-        url = `${process.env.REACT_APP_API_URL}/database/users/${wcoId}/verify`
-
-        axios.get(`${url}`).then(res=>{
-            console.log(event);
-            console.log(res)
-            setwcoId(()=>"");
-            setMessage(message=>[...message,res.data.message])
-        }).catch(err=>{
-            setMessage(message=>[...message,(`${err.response.data.message}\n${err.response.data.details}`)])
-            console.log(err.response.data)
-            setwcoId(()=>"");
-        })
+        // url = `${process.env.REACT_APP_API_URL}/database/users/${wcoId}/verify`
+        //
+        // axios.get(`${url}`).then(res=>{
+        //     console.log(event);
+        //     console.log(res)
+        //     setwcoId(()=>"");
+        //     setMessage(message=>[...message,res.data.message])
+        // }).catch(err=>{
+        //     setMessage(message=>[...message,(`${err.response.data.message}\n${err.response.data.details}`)])
+        //     console.log(err.response.data)
+        //     setwcoId(()=>"");
+        // })
 
     }
 if(message.length === 0){

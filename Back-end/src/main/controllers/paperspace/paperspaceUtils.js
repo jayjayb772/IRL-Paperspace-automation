@@ -15,7 +15,7 @@ async function listMachines(options={}) {
         try {
             paperspace.machines.list(options, async function (err, res) {
                 if (err) {
-                    reject(betterError(err.statusCode, "Paperspace Machines api call fail", err.message));
+                    reject(betterError(501, "Paperspace Machines api call fail", err.message));
                 }
                 if(res.length < 1){
                    reject(betterError(404, "Cannot find Open Machine", "Filtering of machine list by state returned zero matching machines"))
@@ -33,8 +33,7 @@ async function listMachines(options={}) {
 
             })
         } catch (err) {
-            betterLogging("listMachines", "CATCH ERROR", err)
-            reject(err);
+            reject(betterError(501, "CATCH ERROR", err));
         }
     }))
 }
@@ -54,7 +53,7 @@ function setMachineAccess(userId, machineId, enableAccess) {
                 betterLogging("setMachineAccess", "set access error", err)
                 betterLogging("setMachineAccess", "set access response", res)
                 if(err){
-                    throw betterError(err.statusCode,"Paperspace Users api call fail",err.message);
+                    reject(betterError(err.status,"Paperspace Users api call fail",err.message));
                 }
                 resolve(res)
             });
@@ -76,7 +75,7 @@ function listUsers(options={}) {
                 betterLogging("listUsers", "list function error", err)
                 betterLogging("listUsers", "list function response", res)
                 if (err) {
-                    throw betterError(err.statusCode, "Paperspace Users api call fail", err.message);
+                    reject(betterError(err.statusCode, "Paperspace Users api call fail", err.message));
                 }
                 if(res.length < 1){
                     reject(betterError(404, "Cannot find User", "User not found in paperspace team. Please contact the IRL to be invited"))
@@ -84,7 +83,7 @@ function listUsers(options={}) {
                 resolve(res);
             })
         } catch (err) {
-            reject(err)
+            reject(betterError(501, err, err))
         }
     }))
 }

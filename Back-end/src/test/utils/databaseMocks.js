@@ -1,15 +1,17 @@
-const sqlite3 = require('sqlite3').verbose()
-const md5 = require('md5')
+const sqlite3 = require("sqlite3");
 
-let DBSOURCE = process.env.NODE_ENV==='test' ? "reservationsDBTEST.sqlite" : "reservationsDB.sqlite"
+const DBSOURCE = 'reservationsDBTEST.sqlite'
 
+let uId = 1;
+let rId = 1;
+let mId = 1;
 
 let db = new sqlite3.Database(DBSOURCE, (err) => {
     if (err) {
         console.error(err.message)
         throw err
     } else {
-        console.log(`Connected to the SQLite database ${DBSOURCE}.`)
+        console.log('Connected to the SQLiteTEST database.')
         //region INIT DB
         //Create t_reservations
         db.run(`CREATE TABLE t_reservations (
@@ -26,13 +28,15 @@ let db = new sqlite3.Database(DBSOURCE, (err) => {
                             console.log(err)
                             return;
                         }
-                        console.log(rows)
+                        rId = parseInt(rows[rows.length-1].reservation_id) +1
+                        //console.log(rows)
                     })
                 } else {
                     // Table just created, creating some rows
                     let insert = 'INSERT INTO t_reservations (reservation_id, user_id, start_ts, end_ts, status) VALUES (?,?,?,?,?)'
-                    db.run(insert, ["CK-89852", "JBENDE11", "2020-10-08T14:00:00.000000-05:00", "2020-10-08T15:00:00.000000-05:00", "COMPLETE"])
-                    console.log('HERE');
+                    db.run(insert, ["1", "Test1", "2020-04-08T14:00:00.000000-05:00", "2020-07-08T15:00:00.000000-05:00", "COMPLETE"])
+                    //console.log('HERE');
+                    rId++
                 }
             });
 
@@ -54,13 +58,16 @@ let db = new sqlite3.Database(DBSOURCE, (err) => {
                             console.log(err)
                             return;
                         }
-                        console.log(rows)
+                        uId = parseInt(rows[rows.length-1].user_id) +1
+                        //console.log(rows)
                     })
                 } else {
                     // Table just created, creating some rows
                     let insert = 'INSERT INTO t_users (user_id, name, email_address, paperspace_email_address, verified_in_paperspace, paperspace_user_id, assigned_machine, reservations) VALUES (?,?,?,?,?,?,?,?)'
-                    db.run(insert, ["TEST111", "test user", "test111@depaul.edu", null, 0, null, null, "{[]}"])
-                    console.log('HERE');
+                    db.run(insert, ["1", "test U1", "test1@depaul.edu", null, 0, null, null, "{[]}"])
+                    //console.log('HERE');
+                    uId++
+
                 }
             });
 
@@ -79,20 +86,20 @@ let db = new sqlite3.Database(DBSOURCE, (err) => {
                             console.log(err)
                             return;
                         }
-                        console.log(rows)
+                        mId = parseInt(rows[rows.length-1].machine_id) +1
+                        //console.log(rows)
                     })
                 } else {
                     // Table just created, creating some rows
                     let insert = 'INSERT INTO t_machines (machine_id, machine_name, in_use, state, assigned_to) VALUES (?,?,?,?,?)'
-                    db.run(insert, ["psfyw98r0", "IRL1", 0, "ready", null])
-                    console.log('HERE');
+                    db.run(insert, ["1", "TEST1", 0, "ready", null])
+                    //console.log('HERE');
+                    mId++
                 }
             });
         //endregion
     }
 });
 
-//DB INIT Function with all tables and rows
+module.exports = [db, mId, rId, uId]
 
-
-module.exports = db

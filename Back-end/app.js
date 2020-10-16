@@ -189,7 +189,7 @@ if(!process.env.SID) {
     restartSession()
 }
 
-setInterval(handleTimeout, 60000*5)
+setInterval(handleTimeout, 10000)
 setInterval(restartSession, 60000*10)
 
 module.exports = app;

@@ -1,4 +1,5 @@
 const express = require('express');
+const {deleteUser} = require("./databaseFunctions");
 const {insertMachine} = require("./databaseFunctions");
 const {insertUser} = require("./databaseFunctions");
 const {updateReservationInfo} = require("./databaseFunctions");
@@ -136,6 +137,40 @@ dbController.get('/users', ((req, res) => {
 
 /**
  * @swagger
+ * /database/users:
+ *   post:
+ *     description: adds user to database
+ *     tags:
+ *       - user
+ *     produces:
+ *       - application/json
+ *     requestBody:
+ *      description: Request body for adding user to the database
+ *      required: true
+ *      content:
+ *       application/json:
+ *        schema:
+ *         $ref: '#/definitions/User'
+ *     responses:
+ *       201:
+ *         description: successfully added user
+ *       400:
+ *         description: Bad request body
+ *       500:
+ *         description: Internal Server Error
+ */
+dbController.post('/users', (req,res)=>{
+    insertUser(req.body).then(response=>{
+        res.status(201)
+        res.send(response)
+    }).catch(err=>{
+        res.status(err.statusCode)
+        res.send(err)
+    })
+})
+
+/**
+ * @swagger
  * /database/users/{userid}:
  *   get:
  *     description: gets user from specified id
@@ -217,38 +252,48 @@ dbController.patch('/users/:userid', ((req, res) => {
 
 /**
  * @swagger
- * /database/users:
- *   post:
- *     description: adds user to database
+ *
+ * /database/users/{userid}:
+ *   patch:
+ *     description: updates user in database
  *     tags:
  *       - user
  *     produces:
  *       - application/json
+ *     parameters:
+ *      - in: path
+ *        name: userid
+ *        schema:
+ *         type: string
+ *        required: true
+ *        description: WCO user id of user you are updating
  *     requestBody:
- *      description: Request body for adding user to the database
+ *      description: Request body for updating user in the database, can use all, some, or 1 params
  *      required: true
  *      content:
  *       application/json:
  *        schema:
  *         $ref: '#/definitions/User'
  *     responses:
- *       201:
- *         description: successfully added user
+ *       204:
+ *         description: successfully updated user
  *       400:
  *         description: Bad request body
+ *       404:
+ *         description: Resource not found
  *       500:
  *         description: Internal Server Error
  */
-dbController.post('/users', (req,res)=>{
-    insertUser(req.body).then(response=>{
-        res.status(201)
-        res.send(response)
-    }).catch(err=>{
-        res.status(err.statusCode)
-        res.send(err)
-    })
-})
-
+dbController.delete('/users/:userid', ((req, res) => {
+        deleteUser(req.params.userid).then(response => {
+            res.status(204)
+            res.send(response)
+        }).catch(err => {
+            res.status(err.statusCode);
+            res.send(err)
+        })
+    }
+))
 
 /**
  * @swagger

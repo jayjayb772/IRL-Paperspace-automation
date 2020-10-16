@@ -1,6 +1,7 @@
 const {betterError} = require("../util/betterError");
 const {searchReservationsByStatus} = require("../database/databaseFunctions");
 const moment = require('moment');
+const {paperspaceDiscordMessage} = require("../util/discordMessage");
 const {searchMachines} = require("../database/databaseFunctions");
 const {updateReservationInfo} = require("../database/databaseFunctions");
 const {updateReservation} = require("../database/databaseFunctions");
@@ -32,6 +33,9 @@ async function iterateReservationsGive() {
                     let resMoment = moment(reservation.start_ts)
                     let minsUntilRes = resMoment.diff(curTime, 'minutes')
                     //if, curTime.until(start_ts) is less than 5 minutes
+                    if(minsUntilRes >25 && minsUntilRes<30){
+                        await paperspaceDiscordMessage("Reservation starting soon!", `Reservation Starting in ${minsUntilRes}`, `User ${reservation.user_id} has a reservation in ${minsUntilRes} minutes.\nMake sure they are prepared and verified in paperspace.`, "#FF0000")
+                    }
                     if (minsUntilRes < 5) {
                         //Get user
                         let user = await searchUsers(reservation.user_id).catch(err => {
@@ -119,6 +123,8 @@ async function iterateReservationsRevoke() {
                 }
                 try {
                     let resMoment = moment(reservation.end_ts)
+                    console.log(resMoment)
+                    console.log(curTime)
                     let minsSinceRes = resMoment.diff(curTime, 'minutes')
                     console.log(minsSinceRes)
                     if (minsSinceRes <= -5) {

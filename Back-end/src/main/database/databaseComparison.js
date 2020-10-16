@@ -1,3 +1,4 @@
+const {paperspaceDiscordMessage} = require("../util/discordMessage");
 const {updateReservation} = require("./databaseFunctions");
 const {insertUser} = require("./databaseFunctions");
 const {insertMachine} = require("./databaseFunctions");
@@ -11,11 +12,13 @@ const {searchUsers} = require("./databaseFunctions");
 async function insertUserIfDoesNotExist(user, user_id) {
     return new Promise(((resolve, reject) => {
         searchUsers(user_id).then(row => {
-            if(row.length < 1){
+            if(row === undefined){
                 insertUser(user).then(res=>{
+                    paperspaceDiscordMessage("New User", `New User ${user_id}`, "Confirm that they have created a paperspace account.\nGet their email and add them to the team")
                     resolve(res)
                 }).catch(err=>{
                     reject(err)
+                    paperspaceDiscordMessage("New User", `New User ${user_id}`, "Confirm that they have created a paperspace account.\nGet their email and add them to the team", "#ff0000")
                 })
             }else {
                 reject("user exists")
@@ -48,17 +51,18 @@ async function insertReservationIfDoesNotExist(reservation, reservation_id) {
             if(row.length < 1){
                 insertReservation(reservation).then(res=>{
                     resolve(res)
+                    paperspaceDiscordMessage("New reservation", `New reservation at ${reservation.start_ts} for user ${reservation.user_id}`, "Make sure user is ready for reservation")
                 })
             }else {
-                if(row[0].status !== reservation.status){
-                    updateReservation(reservation_id, reservation.status).then(res=>{
-                        resolve(res)
-                    }).catch(err=>{
-                        reject(err)
-                    })
-                }else{
+                // if(row[0].status !== reservation.status){
+                //     updateReservation(reservation_id, reservation.status).then(res=>{
+                //         resolve(res)
+                //     }).catch(err=>{
+                //         reject(err)
+                //     })
+                // }else{
                     reject("reservation exists")
-                }
+               // }
             }
         }).catch(err => {
             reject(betterError(501, "error in db comparison reservation", `${reservation_id}\n${err}`))

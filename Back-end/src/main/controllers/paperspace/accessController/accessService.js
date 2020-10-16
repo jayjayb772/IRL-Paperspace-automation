@@ -16,7 +16,8 @@ function giveAccessFromEmail(reqBody) {
             let user = await listUsers({email:reqBody.email})
             betterLogging("giveAccessFromEmail", "finished getting user", user)
             let openMachine = await searchOpenMachines().catch(err => {
-                throw betterError(500, "Error getting open machine", JSON.stringify(err))
+                console.log(err)
+                reject(betterError(500, "Error getting open machine", JSON.stringify(err)))
             })
             betterLogging("giveAccessFromEmail", "finished getting machine", openMachine)
             let setAccessResponse = await setMachineAccess(user[0].id, openMachine.machine_id, true)
@@ -25,7 +26,7 @@ function giveAccessFromEmail(reqBody) {
             resolve(setAccessResponse);
         } catch (err) {
             betterLogging("giveAccessFromEmail", "CATCH ERROR", err)
-            reject(err)
+            reject(betterError(501,err,err))
         }
     }))
 }

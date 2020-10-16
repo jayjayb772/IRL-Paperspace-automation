@@ -234,6 +234,32 @@ async function updateUser(user_id, updatedInfo) {
     })
 }
 
+async function deleteUser(user_id) {
+    console.log("Starting delete")
+    return new Promise((resolve, reject) => {
+        db.all(`SELECT * FROM t_users WHERE user_id = ?`, [user_id], (err, rows)=>{
+            if(err){
+                reject(betterError(500, "error finding user", `Error finding ${user_id}\n${err}`))
+            }
+            if(rows < 1){
+                reject(betterError(404, "User does not exist", `User ${user_id} does not exist in system`))
+            }
+            if(rows > 1){
+                reject(betterError(500, "Multiple rows returned", "multiple rows found for user"))
+            }
+        })
+        let sql = 'DELETE FROM t_users WHERE user_id=?';
+        let params = [user_id];
+        db.run(sql, params, (err) => {
+            if (err) {
+                reject(betterError(500, "failed to Delete in t_users", `Failed to updated row ${user_id}\n${err}`));
+            } else {
+                resolve(`Deleted ${user_id}`)
+            }
+        })
+    })
+}
+
 //endregion
 
 //region Machine
@@ -326,6 +352,32 @@ async function updateMachine(machine_id, updatedInfo) {
     })
 }
 
+async function deleteMachine(machine_id) {
+    console.log("Starting delete")
+    return new Promise((resolve, reject) => {
+        db.all(`SELECT * FROM t_machine WHERE machine_id = ?`, [machine_id], (err, rows)=>{
+            if(err){
+                reject(betterError(500, "error finding user", `Error finding ${machine_id}\n${err}`))
+            }
+            if(rows < 1){
+                reject(betterError(404, "Machine does not exist", `User ${machine_id} does not exist in system`))
+            }
+            if(rows > 1){
+                reject(betterError(500, "Multiple rows returned", "multiple rows found for user"))
+            }
+        })
+        let sql = 'DELETE FROM t_machine WHERE machine_id=?';
+        let params = [machine_id];
+        db.run(sql, params, (err) => {
+            if (err) {
+                reject(betterError(500, "failed to Delete in t_users", `Failed to updated row ${machine_id}\n${err}`));
+            } else {
+                resolve(`Deleted ${machine_id}`)
+            }
+        })
+    })
+}
+
 //endregion
 
 
@@ -339,8 +391,10 @@ module.exports = {
     searchUsersEmail,
     insertUser,
     updateUser,
+    deleteUser,
     searchMachines,
     insertMachine,
     updateMachine,
+    deleteMachine,
     searchOpenMachines
 }

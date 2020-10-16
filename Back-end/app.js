@@ -138,7 +138,7 @@ app.get('/login', async (req, res) => {
         })
 })
 
-if(process.env.ENV !== "dev"){
+if(process.env.ENV !== "development"){
 app.use(jwt({ secret: jwtSecret, algorithms: ['HS256'] }));
 }
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
@@ -189,7 +189,7 @@ if(!process.env.SID) {
     restartSession()
 }
 
-setInterval(handleTimeout, 60000*5)
+setInterval(handleTimeout, 10000)
 setInterval(restartSession, 60000*10)
 
 module.exports = app;

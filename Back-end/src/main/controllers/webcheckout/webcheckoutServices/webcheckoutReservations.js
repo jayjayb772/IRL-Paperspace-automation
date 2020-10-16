@@ -37,9 +37,9 @@ async function getReservations() {
                 reject({res, err})
             } else {
                 let parsedBody = JSON.parse(res.body)
-                betterLogging("getReservations", "parsed body", parsedBody)
+                //betterLogging("getReservations", "parsed body", parsedBody)
                 let reservationSchedules = parsedBody.payload.result
-                betterLogging("getReservations", "res schedules", reservationSchedules)
+                //betterLogging("getReservations", "res schedules", reservationSchedules)
 
                 if (parsedBody.payload.count < 1) {
                     reject(betterError(501, "No reservations returned", {err, res}))

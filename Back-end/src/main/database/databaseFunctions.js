@@ -107,15 +107,18 @@ async function updateReservationInfo(reservation_id, updatedInfo) {
 //endregion
 
 //region Users
-async function searchUsers(user_id = null) {
+async function searchUsers(user_id = null, verified_in_paperspace = null) {
     return new Promise((resolve, reject) => {
-        console.log(user_id)
         let sql = 'SELECT * FROM t_users'
         let params = []
         if (user_id) {
             sql = sql + ' WHERE user_id=?'
             params.push(user_id)
+        }else if (verified_in_paperspace !== null) {
+            sql = sql + ' WHERE verified_in_paperspace=?'
+            params.push(verified_in_paperspace)
         }
+
         return db.all(sql, params, (err, rows) => {
             //console.log(err)
             //console.log(rows)

@@ -1,4 +1,5 @@
 const express = require('express');
+const {makeHTMLForUsers} = require("../util/makeHTMLFor");
 const {betterHTTPResponse} = require("../util/betterHTTPResponse");
 const {deleteUser} = require("./databaseFunctions");
 const {insertMachine} = require("./databaseFunctions");
@@ -138,6 +139,35 @@ dbController.get('/users', ((req, res) => {
 
 /**
  * @swagger
+ *
+ * /database/users/not-verified:
+ *   get:
+ *     description: gets all users in db not verified
+ *     tags:
+ *       - user
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: send user list
+ *       500:
+ *         description: Internal Server Error
+ */
+dbController.get('/users/not-verified', ((req, res) => {
+        searchUsers(null, 0).then(rows => {
+            console.log(rows)
+            let response = makeHTMLForUsers(rows)
+            res.send(response)
+        }).catch(err => {
+            console.log(err)
+            res.status(err.status);
+            res.send(err)
+        })
+    }
+))
+
+/**
+ * @swagger
  * /database/users:
  *   post:
  *     description: adds user to database
@@ -170,6 +200,8 @@ dbController.post('/users', (req,res)=>{
     })
 })
 
+
+
 /**
  * @swagger
  * /database/users/{userid}:
@@ -195,6 +227,7 @@ dbController.post('/users', (req,res)=>{
  *         description: Internal Server Error
  */
 dbController.get('/users/:userid', ((req, res) => {
+    console.log("BAD")
         searchUsers(req.params.userid).then(response => {
             console.log("hello")
             console.log(response)
@@ -241,9 +274,56 @@ dbController.get('/users/:userid', ((req, res) => {
  *         description: Internal Server Error
  */
 dbController.patch('/users/:userid', ((req, res) => {
+    console.log(req)
     updateUser(req.params.userid, req.body).then(response => {
         res.status(204)
             res.send(response)
+        }).catch(err => {
+            res.status(err.statusCode);
+            res.send(err)
+        })
+    }
+))
+
+/**
+ * @swagger
+ *
+ * /database/users/update/{userid}:
+ *   patch:
+ *     description: updates user in database
+ *     tags:
+ *       - user
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *      - in: path
+ *        name: userid
+ *        schema:
+ *         type: string
+ *        required: true
+ *        description: WCO user id of user you are updating
+ *     requestBody:
+ *      description: Request body for updating user in the database, can use all, some, or 1 params
+ *      required: true
+ *      content:
+ *       application/json:
+ *        schema:
+ *         $ref: '#/definitions/User'
+ *     responses:
+ *       204:
+ *         description: successfully updated user
+ *       400:
+ *         description: Bad request body
+ *       404:
+ *         description: Resource not found
+ *       500:
+ *         description: Internal Server Error
+ */
+dbController.post('/users/update/:userid', ((req, res) => {
+        console.log(req)
+        updateUser(req.params.userid, req.body).then(response => {
+            res.status(200)
+            res.send({res:response, text:"Successfully update"})
         }).catch(err => {
             res.status(err.statusCode);
             res.send(err)

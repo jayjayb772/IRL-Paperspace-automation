@@ -50,6 +50,7 @@ function setMachineAccess(userId, machineId, enableAccess) {
                 userId: userId,
                 enableAccess: enableAccess
             }, function(err, res) {
+                console.log(err,res)
                 betterLogging("setMachineAccess", "set access error", err)
                 betterLogging("setMachineAccess", "set access response", res)
                 if(err){
@@ -97,6 +98,7 @@ function buildUserVerifiedObject(paperspaceUser){
 
 
 async function verifyUserInPaperspace(user){
+    console.log("In verify")
     return new Promise(((resolve, reject) => {
         listUsers({email:user.paperspace_email_address}).then(res=>{
             if(res.length !== 1){

@@ -117,6 +117,8 @@ async function searchUsers(user_id = null) {
             params.push(user_id)
         }
         return db.all(sql, params, (err, rows) => {
+            //console.log(err)
+            //console.log(rows)
             if (err) {
                 reject(betterError(500, "Could not search users", `failed to search users ${err}`))
             } else {
@@ -379,6 +381,11 @@ async function deleteMachine(machine_id) {
 }
 
 //endregion
+
+
+function updateMachineInUse(machineId, userId){
+
+}
 
 
 module.exports = {

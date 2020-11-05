@@ -1,4 +1,4 @@
-function bRes(status, message, details){
+function betterHTTPResponse(status, message, details){
     return {
         status:status,
         message:message,
@@ -6,4 +6,4 @@ function bRes(status, message, details){
     }
 }
 
-module.exports = {bRes}
+module.exports = {betterHTTPResponse}

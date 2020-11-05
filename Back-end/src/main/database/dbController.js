@@ -1,11 +1,12 @@
 const express = require('express');
+const {betterHTTPResponse} = require("../util/betterHTTPResponse");
 const {deleteUser} = require("./databaseFunctions");
 const {insertMachine} = require("./databaseFunctions");
 const {insertUser} = require("./databaseFunctions");
 const {updateReservationInfo} = require("./databaseFunctions");
 const {reservationDTO} = require("./dataObjects");
 const {insertReservation} = require("./databaseFunctions");
-const {bRes} = require("../util/betterhttpresponse");
+const {bRes} = require("../util/betterHTTPResponse");
 const {verifyUserInPaperspace} = require("../controllers/paperspace/paperspaceUtils");
 const {updateReservation} = require("./databaseFunctions");
 const {updateUser} = require("./databaseFunctions");
@@ -325,31 +326,38 @@ dbController.delete('/users/:userid', ((req, res) => {
  *         description: Internal Server Error
  */
 dbController.get('/users/:userid/verify', ((req, res) => {
+    console.log(req.params)
     searchUsers(req.params.userid).then(user=>{
-        if(user.length !== 1){
+        console.log(user)
+        if(user === undefined){
             res.status(404)
             res.send("Could not find specified user in t_users")
             return;
         }
-        if(user[0].paperspace_email_address === null){
+        if(user.paperspace_email_address === null){
             res.status(400);
             res.send("No paperspace email address given for this user. please use the patch endpoint to update this field")
             return;
         }
-        if(user[0].verified_in_paperspace === 1){
+        if(user.verified_in_paperspace === 1){
             res.status(200);
-            res.send(bRes(200, "User is verified in paperspace!", "User is verified"))
+            res.send( betterHTTPResponse(200, "User already verified in Paperspace", `User ${req.params.userid} is in the paperspace team and ready to be assigned a machine`))
             return;
         }
-        verifyUserInPaperspace(user[0]).then(verifyRes=>{
+        console.log("Passed Checks")
+        verifyUserInPaperspace(user).then(verifyRes=>{
             res.status(201)
-            res.send(bRes(201, "Successfully verified user in Paperspace", `User ${req.params.userid} is in the paperspace team and ready to be assigned a machine`))
+            res.send(betterHTTPResponse(201, "Successfully verified user in Paperspace", `User ${req.params.userid} is in the paperspace team and ready to be assigned a machine`))
         }).catch(err=>{
-            res.status(err.statusCode)
+            console.log("inner Catch")
+            console.log(err)
+            res.status(err.status)
             res.send(err)
         })
     }).catch(err=>{
-        res.status(err.statusCode)
+        console.log("outer Catch")
+        console.log(err)
+        res.status(err.status)
         res.send(err)
     })
     }))

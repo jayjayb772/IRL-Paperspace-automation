@@ -34,7 +34,7 @@ async function iterateReservationsGive() {
                     let minsUntilRes = resMoment.diff(curTime, 'minutes')
                     //if, curTime.until(start_ts) is less than 5 minutes
                     if(minsUntilRes >25 && minsUntilRes<30){
-                        await paperspaceDiscordMessage("Reservation starting soon!", `Reservation Starting in ${minsUntilRes}`, `User ${reservation.user_id} has a reservation in ${minsUntilRes} minutes.\nMake sure they are prepared and verified in paperspace.`, "#FF0000")
+                        //await paperspaceDiscordMessage("Reservation starting soon!", `Reservation Starting in ${minsUntilRes}`, `User ${reservation.user_id} has a reservation in ${minsUntilRes} minutes.\nMake sure they are prepared and verified in paperspace.`, "#FF0000")
                     }
                     if (minsUntilRes < 5) {
                         //Get user

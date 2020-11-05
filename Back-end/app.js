@@ -5,6 +5,8 @@ const ENV = process.env.ENV;
 const jwt = require('express-jwt');
 const jsonwebtoken = require('jsonwebtoken');
 const bodyParser = require('body-parser');
+const multer = require('multer');
+const upload = multer();
 const swaggerUi = require('swagger-ui-express');
 const swaggerJSDoc = require('swagger-jsdoc');
 const cors = require('cors')
@@ -68,6 +70,7 @@ const swaggerSpec = swaggerJSDoc(swagOptions);
 
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(upload.array());
 app.use(cors())
 
 const jwtSecret = process.env.JWT_SECRET;
@@ -117,30 +120,30 @@ app.post('/login', async (req, res) => {
     })
 })
 
-/**
- * @swagger
- * /login:
- *   get:
- *     description: logs in and gets token as guest with limited functionality
- *     tags:
- *       - access
- *     produces:
- *       - application/json
- *     responses:
- *       201:
- *         description: got token
- *       500:
- *         description: Internal Server Error
- */
-app.get('/login', async (req, res) => {
-        res.json({
-            token: jsonwebtoken.sign({ user: `guest` }, jwtSecret)
-        })
-})
+// /**
+//  * @swagger
+//  * /login:
+//  *   get:
+//  *     description: logs in and gets token as guest with limited functionality
+//  *     tags:
+//  *       - access
+//  *     produces:
+//  *       - application/json
+//  *     responses:
+//  *       201:
+//  *         description: got token
+//  *       500:
+//  *         description: Internal Server Error
+//  */
+// app.get('/login', async (req, res) => {
+//         res.json({
+//             token: jsonwebtoken.sign({ user: `guest` }, jwtSecret)
+//         })
+// })
 
-if(process.env.ENV !== "development"){
-app.use(jwt({ secret: jwtSecret, algorithms: ['HS256'] }));
-}
+// if(process.env.ENV !== "development"){
+// app.use(jwt({ secret: jwtSecret, algorithms: ['HS256'] }));
+// }
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
 
@@ -189,7 +192,7 @@ if(!process.env.SID) {
     restartSession()
 }
 
-setInterval(handleTimeout, 10000)
+setInterval(handleTimeout, 60000*5)
 setInterval(restartSession, 60000*10)
 
 module.exports = app;

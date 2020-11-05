@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<body>
+<style>
+    .hide { border:none;  }
+    .resetButton {display: inline; width: auto; height: auto; visibility: hidden}
+    .label {visibility: hidden}
+</style>
+
+<script type="text/javascript" id="resetForm">
+    function resetForm() {
+        document.getElementById('form').reset();
+        // document.getElementById('form').style.visibility = 'visible';
+        document.getElementById('form').hidden = false;
+        document.getElementById('hiddenFrame').src = "";
+        document.getElementById('resetButton').style.visibility = 'hidden';
+        document.getElementById('label').style.visibility = 'hidden';
+        document.getElementById('hiddenFrame').height = 0;
+    }
+
+    function showNode(){
+        // document.getElementById('form').style.visibility = 'hidden';
+        document.getElementById('form').hidden = true;
+        document.getElementById('label').style.visibility = 'visible';
+        document.getElementById('resetButton').style.visibility = 'visible';
+        document.getElementById('hiddenFrame').height = 250;
+    }
+</script>
+<div style="text-align: center; font-family: Calibri;">
+
+
+
+    <form action="http://localhost:8091/access/give-access-from-id" id="form" target="hiddenFrame" method="post" enctype="multipart/form-data">
+        <label for="id">Depaul ID of student to give access to<br>(ALL CAPS)</label><br>
+        <input type="text" id="id" name="id" size=40><br><br>
+        <input type="submit" class="submit"  value="Give Access to open machine" onclick="showNode()">
+        <output name="closestNode" for="address"></output>
+    </form>
+    <lable for="hiddenFrame" id="label" class="label">Success</lable><br>
+    <iframe name="hiddenFrame" id="hiddenFrame" height="0" width="425" class="hide"></iframe>
+    <br>
+    <input type="submit" class="resetButton" id="resetButton" value="Reset" onclick="resetForm()">
+
+<!--    <h6>None of this information is retained. It is used exclusively to calculate distance to nodes.</h6>-->
+
+</div>
+</body>
+</html>

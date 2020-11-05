@@ -1,4 +1,9 @@
 const md5 = require("md5");
+const {searchMachines} = require("../../../database/databaseFunctions");
+const {updateMachine} = require("../../../database/databaseFunctions");
+const {updateReservationInfo} = require("../../../database/databaseFunctions");
+const {updateUser} = require("../../../database/databaseFunctions");
+const {betterHTTPResponse} = require("../../../util/betterHTTPResponse");
 const {searchUsersEmail} = require("../../../database/databaseFunctions");
 const {searchOpenMachines} = require("../../../database/databaseFunctions");
 const {searchUsers} = require("../../../database/databaseFunctions");
@@ -30,6 +35,104 @@ function giveAccessFromEmail(reqBody) {
         }
     }))
 }
+
+async function giveAccessFromID(reqBody){
+    return new Promise(async (resolve, reject) => {
+        try {
+            console.log(reqBody)
+            let user = await searchUsers(reqBody.userid).catch(err => {
+                throw betterError(500, "Error getting reservation list", JSON.stringify(err))
+            })
+            console.log(JSON.stringify(user))
+
+            //Get first machine with in_use === 0
+            let machine = await searchOpenMachines().catch(err => {
+                throw betterError(500, "Error getting open machine", JSON.stringify(err))
+            })
+            //console.log(JSON.stringify(machine))
+            //console.log(machine.machine_id)
+            //set machine assigned to user
+            //set machine in_use to 1
+            let machineUpdateInfo = {
+                in_use: 1,
+                assigned_to: user.paperspace_user_id
+            }
+
+            //set user assigned machine to machine
+            let userUpdateInfo = {
+                assigned_machine: machine.machine_id
+            }
+            //set reservation to active
+            let reservationUpdateInfo = {
+                status: "ACTIVE"
+            }
+            //set access for userID to machine
+            let accessRes = await setMachineAccess(user.paperspace_user_id, machine.machine_id, true).catch(err => {
+                throw betterError(500, "Error setting machine access", JSON.stringify(err))
+            })
+            let updateMachineRes = await updateMachine(machine.machine_id, machineUpdateInfo).catch(err => {
+                throw betterError(500, "Error updating machine", JSON.stringify(err))
+            })
+            let updateUserRes = await updateUser(user.user_id, userUpdateInfo).catch(err => {
+                throw betterError(500, "Error updating user", JSON.stringify(err))
+            })
+            //console.log(`Gave ${user.user_id} access to ${machine.machine_id}`)
+            resolve(betterHTTPResponse(200, `Gave ${user.user_id} access to ${machine.machine_id}`, "Success"))
+            //find email with id
+            //give ps access
+            //updateDB
+        }catch(err){
+            reject(betterHTTPResponse(500,err,"Error in giveAccess"))
+        }})
+}
+
+
+
+async function revokeAccessFromID(reqBody){
+    return new Promise(async (resolve, reject) => {
+        try {
+            console.log(reqBody)
+            let user = await searchUsers(reqBody.userid).catch(err => {
+                throw betterError(500, "Error getting user list", JSON.stringify(err))
+            })
+            console.log(JSON.stringify(user))
+
+            //Get first machine with in_use === 0
+            let machine = await searchMachines(user.assigned_machine)
+            //console.log(JSON.stringify(machine))
+            //console.log(machine.machine_id)
+            //set machine assigned to user
+            //set machine in_use to 1
+            let machineUpdateInfo = {
+                in_use: 0,
+                assigned_to: null
+            }
+
+            //set user assigned machine to machine
+            let userUpdateInfo = {
+                assigned_machine: null
+            }
+            //set reservation to active
+            //set access for userID to machine
+            let accessRes = await setMachineAccess(user.paperspace_user_id, machine.machine_id, false).catch(err => {
+                throw betterError(500, "Error setting machine access", JSON.stringify(err))
+            })
+            let updateMachineRes = await updateMachine(machine.machine_id, machineUpdateInfo).catch(err => {
+                throw betterError(500, "Error updating machine", JSON.stringify(err))
+            })
+            let updateUserRes = await updateUser(user.user_id, userUpdateInfo).catch(err => {
+                throw betterError(500, "Error updating user", JSON.stringify(err))
+            })
+            //console.log(`Gave ${user.user_id} access to ${machine.machine_id}`)
+            resolve(betterHTTPResponse(200, `Revoked ${user.user_id} access to ${machine.machine_id}`, "Success"))
+            //find email with id
+            //give ps access
+            //updateDB
+        }catch(err){
+            reject(betterHTTPResponse(500,err,"Error in giveAccess"))
+        }})
+}
+
 //endregion
 
 //region revokeAccess
@@ -87,4 +190,4 @@ function loginAsGuest(reqBody){
         }
     }))
 }
-module.exports = {giveAccessFromEmail, revokeAccessFromEmail, loginToSite}
+module.exports = {giveAccessFromEmail, revokeAccessFromEmail, loginToSite, giveAccessFromID, revokeAccessFromID}

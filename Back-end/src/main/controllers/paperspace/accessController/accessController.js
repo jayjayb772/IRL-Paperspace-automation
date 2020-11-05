@@ -1,5 +1,7 @@
 const {giveAccessFromEmail} =  require("./accessService");
 const express = require('express');
+const {revokeAccessFromID} = require("./accessService");
+const {giveAccessFromID} = require("./accessService");
 const {loginToSite} = require("./accessService");
 const {revokeAccessFromEmail} = require("./accessService");
 const accessController = express.Router()
@@ -25,6 +27,23 @@ const accessController = express.Router()
  *      format: email
  *      description: Email address associated with paperspace account
  *      example: "yourpaperspace@email.com"
+ *
+ *   EnableAccessRequestID:
+ *    type: object
+ *    required:
+ *     - name
+ *     - id
+ *    properties:
+ *     name:
+ *      type: string
+ *      format: name
+ *      description: Your name
+ *      example: "Your name"
+ *     userid:
+ *      type: string
+ *      format: id
+ *      description: Depaul ID used for webcheckout with paperspace account
+ *      example: "ttest33"
  *
  *   LoginRequest:
  *    type: object
@@ -92,6 +111,45 @@ accessController.post('/give-access-from-email', async (req, res) => {
         })
 })
 
+/**
+ * @swagger
+ *
+ * /access/give-access-from-id:
+ *   post:
+ *     description: gives access to machine
+ *     tags:
+ *       - paperspaceAccess
+ *     produces:
+ *       - application/json
+ *     requestBody:
+ *      description: Request body for giving access
+ *      required: true
+ *      content:
+ *       application/json:
+ *        schema:
+ *         $ref: '#/definitions/EnableAccessRequestID'
+ *     responses:
+ *       200:
+ *         description: successfully granted access
+ *       400:
+ *         description: Bad request body
+ *       404:
+ *         description: Resource not found
+ *       500:
+ *         description: Internal Server Error
+ *       501:
+ *         description: Paperspace API Error
+ */
+accessController.post('/give-access-from-id', async (req, res) => {
+    console.log(req);
+    console.log(req.body)
+    giveAccessFromID(req.body).then(paperspaceRes=>{
+        res.send(paperspaceRes)
+    }).catch(err=>{
+        res.status(err.status);
+        res.send(err);
+    })
+})
 
 /**
  * @swagger
@@ -131,5 +189,44 @@ accessController.post('/revoke-access-from-email', async (req, res) => {
         res.send(err);
     })
 })
+
+/**
+ * @swagger
+ *
+ * /access/revoke-access-from-id:
+ *   post:
+ *     description: revokes access to machine
+ *     tags:
+ *       - paperspaceAccess
+ *     produces:
+ *       - application/json
+ *     requestBody:
+ *      description: Optional description in *Markdown*
+ *      required: true
+ *      content:
+ *       application/json:
+ *        schema:
+ *         $ref: '#/definitions/EnableAccessRequestID'
+ *     responses:
+ *       200:
+ *         description: successfully granted access
+ *       400:
+ *         description: Bad request body
+ *       404:
+ *         description: Resource not found
+ *       500:
+ *         description: Internal Server Error
+ *       501:
+ *         description: Paperspace API Error
+ */
+accessController.post('/revoke-access-from-id', async (req, res) => {
+    revokeAccessFromID(req.body).then(paperspaceRes=>{
+        res.send(paperspaceRes)
+    }).catch(err=>{
+        res.status(err.status);
+        res.send(err);
+    })
+})
+
 
 module.exports = accessController;
